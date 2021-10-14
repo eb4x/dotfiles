@@ -1,0 +1,12 @@
+[color]
+	ui = true
+[core]
+	editor = vim
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	default = simple
+[user]
+	name = Erik Berg
