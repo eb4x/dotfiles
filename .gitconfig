@@ -2,6 +2,8 @@
 	ui = true
 [core]
 	editor = vim
+[gitreview]
+	username = ebbex
 [init]
 	defaultBranch = main
 [pull]
