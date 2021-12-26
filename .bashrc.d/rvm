@@ -1,0 +1,7 @@
+if [[ ! $PATH =~ ".rvm/bin" && -d $HOME/.rvm/bin ]]; then
+  export PATH="$PATH:$HOME/.rvm/bin"
+fi
+
+if [[ -s $HOME/.rvm/scripts/rvm ]]; then
+  source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+fi
