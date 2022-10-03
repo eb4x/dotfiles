@@ -1,1 +1,8 @@
+# Based on this atlassian dotifles tutorial;
+# https://www.atlassian.com/git/tutorials/dotfiles
+
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+
+# Install dotfiles onto a new system
+#git clone --bare https://github.com/eb4x/dotfiles.git $HOME/.dotfiles
+#dotfiles checkout
