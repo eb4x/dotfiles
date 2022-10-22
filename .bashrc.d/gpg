@@ -1,0 +1,7 @@
+# gpg --list-secret-keys
+# gpg --export-secret-keys > secret-keys.bin
+# gpg --export-ownertrust > owner-trust.txt
+#
+# gpg --import-ownertrust owner-trust.txt
+# gpg --import secret-keys.bin
+export GPG_TTY=`tty`

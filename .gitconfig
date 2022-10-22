@@ -12,3 +12,6 @@
 	default = simple
 [user]
 	name = Erik Berg
+	signingKey = 1182D19B0E5ED030
+[commit]
+	gpgSign = true
