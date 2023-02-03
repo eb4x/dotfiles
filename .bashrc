@@ -1,9 +1,12 @@
 # .bashrc
 
 # Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
+for globalrc in "/etc/bashrc" "/etc/bash.bashrc"; do
+	if [ -f $globalrc ]; then
+		. $globalrc
+	fi
+done
+unset globalrc
 
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
