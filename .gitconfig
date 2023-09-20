@@ -1,7 +1,5 @@
 [color]
 	ui = true
-[core]
-	editor = vim
 [gitreview]
 	username = ebbex
 [init]

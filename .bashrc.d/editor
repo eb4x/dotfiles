@@ -1,1 +1,7 @@
-export EDITOR=vim
+if [ -f /usr/bin/nvim ]; then
+	export EDITOR=nvim
+	alias vim=nvim
+	alias vimdiff="nvim -d"
+else
+	export EDITOR=vim
+fi
