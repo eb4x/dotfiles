@@ -3,3 +3,4 @@ let &packpath = &runtimepath
 source ~/.vimrc
 
 unmap Y
+set mouse=
