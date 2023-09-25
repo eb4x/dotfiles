@@ -4,3 +4,4 @@ source ~/.vimrc
 
 unmap Y
 set mouse=
+set noautoindent
