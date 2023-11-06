@@ -13,3 +13,5 @@
 	signingKey = 1182D19B0E5ED030
 [commit]
 	gpgSign = true
+[alias]
+	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
