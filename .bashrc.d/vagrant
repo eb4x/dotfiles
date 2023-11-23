@@ -1,1 +1,9 @@
 export VAGRANT_DEFAULT_PROVIDER=libvirt
+
+# sudo dnf install @vagrant
+# sudo dnf remove --noautoremove vagrant-libvirt
+# vagrant plugin install vagrant-libvirt
+
+# Fedora vagrant-libvirt is patched to use qemu:///session by default
+# while upstream uses qemu:///system by default
+export LIBVIRT_DEFAULT_URI=qemu:///session
