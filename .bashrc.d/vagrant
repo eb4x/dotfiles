@@ -1,9 +1,31 @@
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 
+# Fedora (rawhide)
 # sudo dnf install @vagrant
 # sudo dnf remove --noautoremove vagrant-libvirt
 # vagrant plugin install vagrant-libvirt
 
 # Fedora vagrant-libvirt is patched to use qemu:///session by default
 # while upstream uses qemu:///system by default
-export LIBVIRT_DEFAULT_URI=qemu:///session
+export LIBVIRT_DEFAULT_URI=qemu:///system
+
+if ! command -v vagrant &> /dev/null; then
+  return
+fi
+
+## Get version
+if ! [[ $(vagrant --version) =~ Vagrant[[:space:]]+([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]]; then
+  echo "Unexpected output from `vagrant --version`"
+  exit 1
+fi
+
+vagrant_version=${BASH_REMATCH[1]}
+
+# Check for auto-completion for version
+if [ ! -f "/opt/vagrant/embedded/gems/gems/vagrant-${vagrant_version}/contrib/bash/completion.sh" ]; then
+  return
+fi
+
+# >>>> Vagrant command completion (start)
+. /opt/vagrant/embedded/gems/gems/vagrant-${vagrant_version}/contrib/bash/completion.sh
+# <<<<  Vagrant command completion (end)
