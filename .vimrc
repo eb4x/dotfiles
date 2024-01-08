@@ -4,8 +4,6 @@ set modeline
 set nowrap
 
 set tabstop=3
-set shiftwidth=3
-set noexpandtab
 
 set listchars=tab:▸\ ,trail:·
 set list
