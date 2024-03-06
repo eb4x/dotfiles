@@ -1,3 +1,4 @@
+syntax on
 filetype plugin indent off
 
 set modeline
