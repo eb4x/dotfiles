@@ -1,7 +1,14 @@
 if [ -f /usr/bin/nvim ]; then
 	export EDITOR=nvim
-	alias vim=nvim
+	alias vi=nvim
 	alias vimdiff="nvim -d"
-else
+elif [ -f /usr/bin/vim ]; then
 	export EDITOR=vim
+	alias vi=vim
+else
+	export EDITOR=vi
 fi
+
+vim() {
+  echo -e "You meant \e[1mvi\e[0m right..?"
+}
