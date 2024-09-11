@@ -21,10 +21,10 @@ sudo dnf install -y libvirt virt-manager virt-install \
 flatpak install flathub com.google.Chrome
 flatpak install flathub com.mattermost.Desktop
 flatpak install flathub com.slack.Slack
+flatpak install flathub com.valvesoftware.Steam
+flatpak install flathub org.ghidra_sre.Ghidra
 flatpak install flathub org.gnome.Evolution
 flatpak install flathub org.mozilla.firefox
-flatpak install flathub org.ghidra_sre.Ghidra
-flatpak install flathub com.valvesoftware.Steam
 flatpak install flathub org.videolan.VLC
 
 flatpak install flathub com.jetbrains.CLion
