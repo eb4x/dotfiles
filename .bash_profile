@@ -1,6 +1,6 @@
 # .bash_profile
 
-eval `ssh-agent`
+eval "$(ssh-agent -s)"
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
