@@ -1,3 +1,7 @@
+if ! command -v podman &> /dev/null; then
+  return
+fi
+
 export REGISTRY_AUTH_FILE=$HOME/.config/containers/auth.json
 
 if [ ! -f "/run/user/$(id -u)/podman/podman.sock" ]; then
