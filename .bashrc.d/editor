@@ -1,10 +1,10 @@
 if [ -f /usr/bin/nvim ]; then
-	export EDITOR=nvim
-	alias vi=nvim
-	alias vimdiff="nvim -d"
+	export EDITOR=/usr/bin/nvim
+	alias vi=/usr/bin/nvim
+	alias vimdiff="/usr/bin/nvim -d"
 elif [ -f /usr/bin/vim ]; then
-	export EDITOR=vim
-	alias vi=vim
+	export EDITOR=/usr/bin/vim
+	alias vi=/usr/bin/vim
 else
 	export EDITOR=vi
 fi
