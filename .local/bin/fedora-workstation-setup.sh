@@ -40,6 +40,10 @@ pip install --user 'ansible-core<2.17' sshuttle
 # Disable touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 
+# Disable suspend on AC
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
 # Add additional routes for home-networking
 if nmcli connection show skynet &> /dev/null; then
   if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
