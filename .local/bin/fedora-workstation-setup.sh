@@ -14,9 +14,12 @@ sudo dnf upgrade -y
 sudo dnf install -y libvirt virt-manager virt-install \
   htop \
   neovim \
+  podman podman-docker skopeo\
   python3-pip \
   sshfs \
   vagrant
+
+sudo touch /etc/containers/nodocker
 
 flatpak install flathub com.google.Chrome
 flatpak install flathub com.mattermost.Desktop
