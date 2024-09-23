@@ -37,6 +37,11 @@ flatpak override --user --filesystem=/run/user/${UID}/podman/podman.sock com.jet
 pip install --upgrade --user pip
 pip install --user 'ansible-core<2.17' sshuttle
 
+sshuttle --sudoers-no-modify | \
+  grep -v -E '^\s*$|^#' | \
+  sed -E 's/SSHUTTLE\w+/SSHUTTLE/g' | \
+  sudo tee /etc/sudoers.d/sshuttle.conf > /dev/null
+
 # Disable touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 
