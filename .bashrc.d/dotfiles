@@ -3,6 +3,11 @@
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
+# Starting from scratch
+#git init --bare $HOME/.dotfiles
+#dotfiles config --local status.showUntrackedFiles no
+
 # Install dotfiles onto a new system
 #git clone --bare https://github.com/eb4x/dotfiles.git $HOME/.dotfiles
+#dotfiles config --local status.showUntrackedFiles no
 #dotfiles checkout
