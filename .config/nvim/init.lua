@@ -19,6 +19,10 @@ vim.cmd("filetype plugin indent off")
 vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
 
+-- search settings
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
