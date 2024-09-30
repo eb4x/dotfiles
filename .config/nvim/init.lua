@@ -31,6 +31,18 @@ local plugins = {
     "nvim-telescope/telescope.nvim", branch = "0.1.x",
     dependencies = { "nvim-lua/plenary.nvim" }
   },
+--  {
+--    "nvim-treesitter/nvim-treesitter", build = ":TSUpdate",
+--    config = function()
+--      local configs = require("nvim-treesitter.configs")
+--      configs.setup({
+--        ensure_installed = { "bash", "c", "go", "javascript", "lua", "python", "ruby", "vim", "yaml" },
+--        sync_install = false,
+--        highlight = { enable = true },
+--        indent = { enable = false },
+--      })
+--    end
+--  },
 }
 require("lazy").setup(plugins, {})
 
