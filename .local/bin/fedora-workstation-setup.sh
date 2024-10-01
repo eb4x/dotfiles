@@ -18,6 +18,7 @@ sudo dnf install -y libvirt virt-manager virt-install \
   podman podman-docker skopeo \
   python3-pip \
   sshfs \
+  tmux \
   vagrant
 
 sudo touch /etc/containers/nodocker
