@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 #
 # This is not idempotent, and ideally runs just once after installation.
@@ -14,7 +15,7 @@ sudo dnf upgrade -y
 sudo dnf install -y libvirt virt-manager virt-install \
   htop \
   neovim \
-  podman podman-docker skopeo\
+  podman podman-docker skopeo \
   python3-pip \
   sshfs \
   vagrant
