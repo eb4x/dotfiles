@@ -66,8 +66,10 @@ gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
-# Theme gnome-terminal (Gnome 41)
-dconf write /org/gnome/Ptyxis/Profiles/$(dconf list /org/gnome/Ptyxis/Profiles/)palette "'Catppuccin Mocha'"
+# Theme gnome-terminal (Fedora 41)
+if (( VERSION_ID >= 41 )); then
+  dconf write /org/gnome/Ptyxis/Profiles/$(dconf list /org/gnome/Ptyxis/Profiles/)palette "'Catppuccin Mocha'"
+fi
 
 # Add additional routes for home-networking
 if nmcli connection show skynet &> /dev/null; then
