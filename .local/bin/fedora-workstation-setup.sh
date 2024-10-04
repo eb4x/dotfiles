@@ -56,6 +56,9 @@ gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
+# Theme gnome-terminal (Gnome 41)
+dconf write /org/gnome/Ptyxis/Profiles/$(dconf list /org/gnome/Ptyxis/Profiles/)palette "'Catppuccin Mocha'"
+
 # Add additional routes for home-networking
 if nmcli connection show skynet &> /dev/null; then
   if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
