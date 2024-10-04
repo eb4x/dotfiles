@@ -10,7 +10,7 @@ shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
 done; shopt -u nullglob
 sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 
-sudo dnf erase -y firefox firefox-langpacks
+sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
 sudo dnf install -y libvirt virt-manager virt-install \
   htop \
