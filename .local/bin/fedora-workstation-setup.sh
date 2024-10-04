@@ -10,7 +10,10 @@ source /etc/os-release
 shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
-sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+
+if (( VERSION_ID < 41 )); then
+  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+fi
 
 # Install rpmfusion
 if [ ! -f /etc/yum.repos.d/rpmfusion-free.repo ]; then
