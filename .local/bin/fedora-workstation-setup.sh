@@ -5,10 +5,20 @@ set -euo pipefail
 # This is not idempotent, and ideally runs just once after installation.
 #
 
+source /etc/os-release
+
 shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
 sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+
+# Install rpmfusion
+if [ ! -f /etc/yum.repos.d/rpmfusion-free.repo ]; then
+  sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${VERSION_ID}.noarch.rpm
+fi
+if [ -f  /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+  sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
+fi
 
 sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
