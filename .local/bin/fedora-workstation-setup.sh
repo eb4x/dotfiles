@@ -23,19 +23,21 @@ sudo dnf install -y libvirt virt-manager virt-install \
 
 sudo touch /etc/containers/nodocker
 
-flatpak install flathub com.google.Chrome
-flatpak install flathub com.mattermost.Desktop
-flatpak install flathub com.slack.Slack
-flatpak install flathub com.valvesoftware.Steam
-flatpak install flathub org.ghidra_sre.Ghidra
-flatpak install flathub org.gnome.Evolution
-flatpak install flathub org.mozilla.firefox
-flatpak install flathub org.videolan.VLC
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-flatpak install flathub com.jetbrains.CLion
-flatpak install flathub com.jetbrains.GoLand
-flatpak install flathub com.jetbrains.RubyMine
-flatpak install flathub com.jetbrains.PyCharm-Professional
+flatpak install -y --user flathub com.google.Chrome
+flatpak install -y --user flathub com.mattermost.Desktop
+flatpak install -y --user flathub com.slack.Slack
+flatpak install -y --user flathub com.valvesoftware.Steam
+flatpak install -y --user flathub org.ghidra_sre.Ghidra
+flatpak install -y --user flathub org.gnome.Evolution
+flatpak install -y --user flathub org.mozilla.firefox
+flatpak install -y --user flathub org.videolan.VLC
+
+flatpak install -y --user flathub com.jetbrains.CLion
+flatpak install -y --user flathub com.jetbrains.GoLand
+flatpak install -y --user flathub com.jetbrains.RubyMine
+flatpak install -y --user flathub com.jetbrains.PyCharm-Professional
 flatpak override --user --filesystem=/run/user/${UID}/podman/podman.sock com.jetbrains.PyCharm-Professional
 
 # As long as we're administering EL8, there's no point in running newer ansible-core
