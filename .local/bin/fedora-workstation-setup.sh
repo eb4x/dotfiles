@@ -11,7 +11,7 @@ shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
 
-if (( VERSION_ID < 41 )); then
+if [ ! -f /etc/yum.repos.d/hashicorp.repo ] && (( VERSION_ID < 41 )); then
   sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 fi
 
