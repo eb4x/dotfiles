@@ -38,6 +38,7 @@ sudo dnf install -y libvirt virt-manager virt-install \
 # Check for Intel VGA, and prep for vaapi
 if lsmod | grep -q i915; then
   sudo dnf install -y \
+    igt-gpu-tools \
     intel-media-driver \
     libva-utils
 fi
