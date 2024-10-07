@@ -19,7 +19,7 @@ fi
 if [ ! -f /etc/yum.repos.d/rpmfusion-free.repo ]; then
   sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${VERSION_ID}.noarch.rpm
 fi
-if [ -f  /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
+if [ -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
   sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
 fi
 
@@ -27,12 +27,20 @@ sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
 sudo dnf install -y libvirt virt-manager virt-install \
   htop \
+  mpv \
   neovim \
   podman podman-docker skopeo \
   python3-pip \
   sshfs \
   tmux \
   vagrant
+
+# Check for Intel VGA, and prep for vaapi
+if lsmod | grep -q i915; then
+  sudo dnf install -y \
+    intel-media-driver \
+    libva-utils
+fi
 
 sudo touch /etc/containers/nodocker
 
