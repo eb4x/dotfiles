@@ -26,6 +26,7 @@ fi
 sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
 sudo dnf install -y libvirt virt-manager virt-install \
+  dnf-utils \
   htop \
   mpv \
   neovim \
@@ -95,3 +96,7 @@ if nmcli connection show skynet &> /dev/null; then
 fi
 
 sudo systemctl enable --now sshd.service
+
+if [ needs-restarting -r ]; then
+  sudo systemctl reboot
+fi
