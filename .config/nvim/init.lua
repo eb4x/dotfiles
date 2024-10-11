@@ -19,6 +19,12 @@ vim.cmd("filetype plugin indent off")
 vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
 
+vim.opt.list = true
+vim.opt.listchars:append {
+  tab = "▸.",
+  trail = "·",
+}
+
 -- search settings
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
