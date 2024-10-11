@@ -81,7 +81,7 @@ sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.pow
 
 # Theme gnome-terminal (Fedora 41)
 if (( VERSION_ID >= 41 )); then
-  dconf write /org/gnome/Ptyxis/Profiles/$(dconf list /org/gnome/Ptyxis/Profiles/)palette "'Catppuccin Mocha'"
+  dconf write "/org/gnome/Ptyxis/Profiles/$(dconf list /org/gnome/Ptyxis/Profiles/)palette" "'Catppuccin Mocha'"
 fi
 
 # Add additional routes for home-networking
@@ -97,6 +97,6 @@ fi
 
 sudo systemctl enable --now sshd.service
 
-if [ needs-restarting -r ]; then
+if needs-restarting -r; then
   sudo systemctl reboot
 fi
