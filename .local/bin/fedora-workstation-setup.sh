@@ -28,14 +28,15 @@ fi
 
 sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
-sudo dnf install -y libvirt virt-manager virt-install \
+sudo dnf install -y \
   htop \
   mpv \
   neovim \
   podman podman-docker skopeo \
   python3-pip \
   sshfs \
-  tmux
+  tmux \
+  virt-manager virt-install
 
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y vagrant
