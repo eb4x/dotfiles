@@ -15,7 +15,7 @@ done; shopt -u nullglob
 sudo dnf install -y dnf-utils
 
 if [ ! -f /etc/yum.repos.d/hashicorp.repo ] && (( VERSION_ID < 41 )); then
-  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  sudo dnf config-manager addrepo --from-repofile https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 fi
 
 # Install rpmfusion
@@ -35,8 +35,11 @@ sudo dnf install -y libvirt virt-manager virt-install \
   podman podman-docker skopeo \
   python3-pip \
   sshfs \
-  tmux \
-  vagrant
+  tmux
+
+if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
+  sudo dnf install -y vagrant
+fi
 
 # Check for Intel VGA, and prep for vaapi
 if lsmod | grep -q i915; then
