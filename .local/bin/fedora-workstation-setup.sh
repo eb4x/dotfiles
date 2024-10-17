@@ -5,6 +5,9 @@ set -euo pipefail
 # This is not idempotent, and ideally runs just once after installation.
 #
 
+echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
+sudo chmod 0440 /etc/sudoers.d/$USER
+
 source /etc/os-release
 
 shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
@@ -102,7 +105,8 @@ if nmcli connection show skynet &> /dev/null; then
 fi
 
 sudo systemctl enable --now sshd.service
+sudo rm /etc/sudoers.d/$USER
 
 if needs-restarting -r; then
-  sudo systemctl reboot
+  systemctl reboot
 fi
