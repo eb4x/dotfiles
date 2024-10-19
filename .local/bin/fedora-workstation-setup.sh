@@ -42,7 +42,10 @@ sudo dnf install -y \
   virt-manager virt-install
 
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
-  sudo dnf install -y vagrant
+  sudo dnf install -y \
+    libvirt-devel \
+    vagrant
+  vagrant plugin install vagrant-libvirt
 fi
 
 # Check for Intel VGA, and prep for vaapi
