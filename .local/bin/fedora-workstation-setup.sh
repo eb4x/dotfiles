@@ -44,6 +44,7 @@ sudo dnf install -y \
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
+    packer \
     vagrant
   vagrant plugin install vagrant-libvirt
 fi
