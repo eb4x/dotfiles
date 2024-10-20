@@ -45,6 +45,10 @@ sudo dnf install -y \
 sudo dnf install -y --allowerase \
   ffmpeg
 
+if ! groups $USER | grep -q libvirt; then
+  sudo usermod -aG libvirt $USER
+fi
+
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
