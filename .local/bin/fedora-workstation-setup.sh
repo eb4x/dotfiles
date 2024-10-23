@@ -41,6 +41,10 @@ sudo dnf install -y \
   tmux \
   virt-manager virt-install
 
+# Get the real stuff (in case ffmpeg-free is installed)
+sudo dnf install -y --allowerase \
+  ffmpeg
+
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
