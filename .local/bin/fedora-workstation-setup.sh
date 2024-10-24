@@ -33,6 +33,7 @@ sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
 sudo dnf install -y \
   htop \
+  flatpak \
   mpv \
   neovim \
   podman podman-docker skopeo \
