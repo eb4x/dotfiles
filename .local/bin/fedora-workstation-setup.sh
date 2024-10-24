@@ -96,6 +96,9 @@ sshuttle --sudoers-no-modify | \
 # Disable touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 
+# Disable bell sounds
+gsettings set org.gnome.desktop.sound event-sounds false
+
 # Disable suspend on AC
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
