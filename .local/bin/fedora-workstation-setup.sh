@@ -18,7 +18,11 @@ done; shopt -u nullglob
 sudo dnf install -y dnf-utils
 
 if [ ! -f /etc/yum.repos.d/hashicorp.repo ] && (( VERSION_ID < 41 )); then
-  sudo dnf config-manager addrepo --from-repofile https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  if (( VERSION_ID >= 41 )); then
+    sudo dnf config-manager addrepo --from-repofile https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  else
+    sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  fi
 fi
 
 # Install rpmfusion
