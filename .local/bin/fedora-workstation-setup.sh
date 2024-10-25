@@ -36,7 +36,7 @@ fi
 sudo dnf remove -y firefox firefox-langpacks
 sudo dnf upgrade -y
 sudo dnf install -y \
-  htop \
+  htop iftop iotop \
   flatpak \
   mpv \
   neovim \
