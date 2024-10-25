@@ -59,7 +59,10 @@ if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
     libvirt-devel \
     packer \
     vagrant
-  vagrant plugin install vagrant-libvirt
+
+  if [ ! -d $HOME/.vagrant.d/gems/*/gems/vagrant-libvirt-* ]; then
+    vagrant plugin install vagrant-libvirt
+  fi
 fi
 
 # Check for Intel VGA, and prep for vaapi
