@@ -47,7 +47,7 @@ sudo dnf install -y \
   virt-manager virt-install
 
 # Get the real stuff (in case ffmpeg-free is installed)
-sudo dnf install -y --allowerase \
+sudo dnf install -y --allowerasing \
   ffmpeg
 
 if ! groups $USER | grep -q libvirt; then
