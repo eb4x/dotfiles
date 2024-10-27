@@ -116,6 +116,12 @@ if (( VERSION_ID >= 41 )); then
   dconf write "/org/gnome/Ptyxis/Profiles/$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d \')/palette" "'Catppuccin Mocha'"
 fi
 
+if [ ! -f $HOME/.local/share/fonts/JetBrainsMonoNerdFont-Regular.ttf ]; then
+  echo "Installing nerd fonts"
+  mkdir -p $HOME/.local/share/fonts
+  curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.tar.xz | tar -xJC $HOME/.local/share/fonts
+fi
+
 # Add additional routes for home-networking
 if nmcli connection show skynet &> /dev/null; then
   if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
