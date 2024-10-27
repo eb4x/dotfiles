@@ -13,9 +13,8 @@ repo --name=rpmfusion-nonfree --mirrorlist="https://mirrors.rpmfusion.org/mirror
 repo --name=rpmfusion-nonfree-updates --mirrorlist="https://mirrors.rpmfusion.org/mirrorlist?repo=nonfree-fedora-updates-released-40&arch=x86_64"
 
 # Run the Setup Agent on first boot
-firstboot --enable
+firstboot --disable
 
-# Generated using Blivet version 3.10.1
 #ignoredisk --only-use=nvme0n1
 autopart
 
