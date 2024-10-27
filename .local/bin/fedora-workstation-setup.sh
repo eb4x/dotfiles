@@ -44,6 +44,7 @@ sudo dnf install -y \
   python3-pip \
   sshfs \
   tmux \
+  v4l2loopback \
   virt-manager virt-install
 
 # Get the real stuff (in case ffmpeg-free is installed)
