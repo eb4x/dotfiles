@@ -81,11 +81,14 @@ flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/fl
 flatpak install -y --user flathub com.google.Chrome
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
-flatpak install -y --user flathub com.valvesoftware.Steam
 flatpak install -y --user flathub org.ghidra_sre.Ghidra
 flatpak install -y --user flathub org.gnome.Evolution
 flatpak install -y --user flathub org.mozilla.firefox
-flatpak install -y --user flathub org.videolan.VLC
+
+if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+  flatpak install -y --user flathub com.valvesoftware.Steam
+  flatpak install -y --user flathub org.videolan.VLC
+fi
 
 flatpak install -y --user flathub com.jetbrains.CLion
 flatpak install -y --user flathub com.jetbrains.GoLand
@@ -109,8 +112,10 @@ gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 gsettings set org.gnome.desktop.sound event-sounds false
 
 # Disable suspend on AC
-gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+  sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+fi
 
 # Theme gnome-terminal (Fedora 41)
 if (( VERSION_ID >= 41 )); then
