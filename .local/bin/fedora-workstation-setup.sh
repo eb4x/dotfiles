@@ -14,8 +14,10 @@ shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
 
-# Needed for `dnf config-manager`
-sudo dnf install -y dnf-utils
+# Needed for `dnf config-manager and versionlock`
+sudo dnf install -y \
+  dnf-utils \
+  dnf-plugin-versionlock
 
 if [ ! -f /etc/yum.repos.d/hashicorp.repo ] && (( VERSION_ID < 41 )); then
   if (( VERSION_ID >= 41 )); then
@@ -59,8 +61,9 @@ if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
     packer \
-    vagrant
+    vagrant-2.4.1
 
+  dnf versionlock vagrant
   if [ ! -d $HOME/.vagrant.d/gems/*/gems/vagrant-libvirt-* ]; then
     vagrant plugin install vagrant-libvirt
   fi
