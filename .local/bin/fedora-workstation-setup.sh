@@ -111,6 +111,9 @@ gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 # Disable bell sounds
 gsettings set org.gnome.desktop.sound event-sounds false
 
+# Enable fractional scaling
+gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+
 # Disable suspend on AC
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
