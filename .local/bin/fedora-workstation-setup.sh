@@ -35,7 +35,10 @@ if [ ! -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
   sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
 fi
 
-sudo dnf remove -y firefox firefox-langpacks
+if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+  sudo dnf remove -y firefox firefox-langpacks
+fi
+
 sudo dnf upgrade -y
 sudo dnf install -y \
   htop iftop iotop \
@@ -81,15 +84,15 @@ sudo touch /etc/containers/nodocker
 
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-flatpak install -y --user flathub com.google.Chrome
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
 flatpak install -y --user flathub org.ghidra_sre.Ghidra
 flatpak install -y --user flathub org.gnome.Evolution
-flatpak install -y --user flathub org.mozilla.firefox
 
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+  flatpak install -y --user flathub com.google.Chrome
   flatpak install -y --user flathub com.valvesoftware.Steam
+  flatpak install -y --user flathub org.mozilla.firefox
   flatpak install -y --user flathub org.videolan.VLC
 fi
 
