@@ -13,12 +13,14 @@ declare -A repos=(
   [hyprutils]="https://src.fedoraproject.org/rpms/hyprutils.git"
   [aquamarine]="https://src.fedoraproject.org/rpms/aquamarine.git"
   [hyprland]="https://src.fedoraproject.org/rpms/hyprland.git"
+  [hyprlock]="https://src.fedoraproject.org/rpms/hyprlock.git"
 )
 
 build_order=(
   hyprutils
   aquamarine
   hyprland
+  hyprlock
 )
 
 mkdir -p $HOME/src/rpms
