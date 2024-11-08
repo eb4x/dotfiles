@@ -46,6 +46,7 @@ sudo dnf install -y \
   mpv \
   neovim \
   podman podman-docker skopeo \
+  ptyxis \
   python3-pip \
   sshfs \
   tmux \
