@@ -46,9 +46,9 @@ sudo dnf install -y \
   mpv \
   neovim \
   podman podman-docker skopeo \
-  ptyxis \
   python3-pip \
   sshfs \
+  Thunar \
   tmux \
   v4l2loopback \
   virt-manager virt-install
