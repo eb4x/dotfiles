@@ -32,9 +32,8 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 #@swaywm-extended
 #sway-config-fedora
 
--unoconv
--libreoffice-filters
 -libreoffice-calc
+-unoconv
 
 -firefox
 
