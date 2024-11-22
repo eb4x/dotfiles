@@ -89,6 +89,7 @@ flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
 flatpak install -y --user flathub org.ghidra_sre.Ghidra
 flatpak install -y --user flathub org.gnome.Evolution
+flatpak install -y --user flathub us.zoom.Zoom
 
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
   flatpak install -y --user flathub com.google.Chrome
