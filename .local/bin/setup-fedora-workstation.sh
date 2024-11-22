@@ -141,6 +141,9 @@ fi
 
 # Add additional routes for home-networking
 if nmcli connection show skynet &> /dev/null; then
+  # Use predictable mac-addresses for predictable IPs.
+  sudo nmcli connection modify skynet 802-11-wireless.mac-address-randomization never
+
   if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
     sudo nmcli connection modify skynet +ipv4.routes "192.168.3.0/24 192.168.140.254"
   fi
