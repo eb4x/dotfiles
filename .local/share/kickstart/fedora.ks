@@ -35,6 +35,10 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 -libreoffice-calc
 -unoconv
 
+-nautilus
+-gnome-classic-session
+-gnome-classic-session-xsession
+
 -firefox
 
 bash-completion
