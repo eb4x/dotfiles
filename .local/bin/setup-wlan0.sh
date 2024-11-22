@@ -24,7 +24,7 @@ for interface in $(ls /sys/class/net); do
   # Determine if we can figure something out about this
   # network interface
 
-  if [ ! -f /sys/class/net/${interface}/device/class ]; then
+  if [ ! -f "/sys/class/net/${interface}/device/class" ]; then
     continue
   fi
 
@@ -44,7 +44,7 @@ for interface in $(ls /sys/class/net); do
   # Regex explanation
   # sed needs to escape (, ) and +
   # /devices/.*/   # Capture as much of the start of the path with .* (giving back as necessary)
-  # (              # 
+  # (              #
   #    [^/]+       # Capture all characters not apart of a path separator preceeding
   # )              #
   # /net/interface # /net/<interface>
@@ -58,4 +58,3 @@ for interface in $(ls /sys/class/net); do
 
   echo "Created rule for: ${interface} on ${pci_path}"
 done
-
