@@ -51,7 +51,7 @@ rpmfusion-nonfree-release
 %pre
 source /etc/os-release
 cat << EOF > /tmp/rpmfusion.repo
-repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/development/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/releases/${VERSION_ID}/Everything/x86_64/os/
 repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/updates/${VERSION_ID}/x86_64/
 repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/releases/${VERSION_ID}/Everything/x86_64/os/
 repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/updates/${VERSION_ID}/x86_64/
