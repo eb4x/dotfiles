@@ -53,6 +53,13 @@ for interface in $(ls /sys/class/net); do
 
   pci_path=$(udevadm info -q path /sys/class/net/${interface} | sed 's /devices/.*/\([^/]\+\)/net/'${interface}' \1 g')
 
+  # https://packetpushers.net/blog/udev/
+  # This great article points to a command
+  # `udevadm test-builtin net_id /sys/class/net/${interface}`
+  # which output a line
+  # `Parsing slot information from PCI device sysname "<pci_path_we_are_looking_for>"`,
+  # So there's probably a cleaner way to do this.
+
   echo "SUBSYSTEM==\"net\", ACTION==\"add\", KERNELS==\"${pci_path}\", NAME=\"wlan0\"" | \
     sudo tee -a /etc/udev/rules.d/70-persistent-net.rules > /dev/null
 
