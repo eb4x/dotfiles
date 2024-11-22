@@ -7,11 +7,6 @@ keyboard --vckeymap=no --xlayouts='no'
 # System language
 lang en_US.UTF-8
 
-repo --name=rpmfusion-free --mirrorlist="https://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-40&arch=x86_64"
-repo --name=rpmfusion-free-updates --mirrorlist="https://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-updates-released-40&arch=x86_64"
-repo --name=rpmfusion-nonfree --mirrorlist="https://mirrors.rpmfusion.org/mirrorlist?repo=nonfree-fedora-40&arch=x86_64"
-repo --name=rpmfusion-nonfree-updates --mirrorlist="https://mirrors.rpmfusion.org/mirrorlist?repo=nonfree-fedora-updates-released-40&arch=x86_64"
-
 # Run the Setup Agent on first boot
 firstboot --disable
 
@@ -48,7 +43,23 @@ git-core
 python3-pip
 Thunar
 
+rpmfusion-free-release
+rpmfusion-nonfree-release
+
 %end
+
+%pre
+source /etc/os-release
+cat << EOF > /tmp/rpmfusion.repo
+repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/development/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/updates/${VERSION_ID}/x86_64/
+repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/releases/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/updates/${VERSION_ID}/x86_64/
+EOF
+
+%end
+
+%include /tmp/rpmfusion.repo
 
 %post --interpreter=/usr/bin/bash --log=/root/ks-post.log
 chage -d 0 erikberg
