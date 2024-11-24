@@ -30,3 +30,25 @@ firewall-cmd --permanent --zone=external --add-rich-rule='rule family="ipv4" sou
 
 firewall-cmd --reload
 ```
+
+# Polkit
+AlmaLinux doesn't come with this one, so we'll just steal it from Fedora
+`/usr/share/polkit-1/rules.d/org.fedoraproject.FirewallD1.rules` and modify it
+to our own policy under `/etc/polkit-1/rules.d/org.fedoraproject.FirewallD1.rules`
+
+The original checked for `subject.local` which prevens this rule from applying to
+ssh sessions. I'm not sure we need anything other than `org.fedoraproject.FirewallD1.config`,
+but lets leave the rest for completeness sake.
+
+```javascript
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.fedoraproject.FirewallD1.config" ||
+	 action.id == "org.fedoraproject.FirewallD1.direct" ||
+         action.id == "org.fedoraproject.FirewallD1.ipset" ||
+         action.id == "org.fedoraproject.FirewallD1.policy" ||
+         action.id == "org.fedoraproject.FirewallD1.zone") &&
+	 subject.active == true && subject.isInGroup("wheel")) {
+         return polkit.Result.YES;
+    }
+});
+```
