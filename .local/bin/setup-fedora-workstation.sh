@@ -50,7 +50,7 @@ sudo dnf install -y \
   sshfs \
   Thunar \
   tmux \
-  v4l2loopback \
+  v4l-utils v4l2loopback \
   virt-manager virt-install
 
 # Get the real stuff (in case ffmpeg-free is installed)
