@@ -93,6 +93,7 @@ flatpak install -y --user flathub us.zoom.Zoom
 
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
   flatpak install -y --user flathub com.google.Chrome
+  flatpak install -y --user flathub com.obsproject.Studio
   flatpak install -y --user flathub com.valvesoftware.Steam
   flatpak install -y --user flathub org.mozilla.firefox
   flatpak install -y --user flathub org.videolan.VLC
