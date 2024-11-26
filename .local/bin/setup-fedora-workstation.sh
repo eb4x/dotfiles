@@ -65,9 +65,8 @@ if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
     packer \
-    vagrant-2.4.1
+    vagrant
 
-  dnf versionlock vagrant
   if [ ! -d $HOME/.vagrant.d/gems/*/gems/vagrant-libvirt-* ]; then
     vagrant plugin install vagrant-libvirt
   fi
