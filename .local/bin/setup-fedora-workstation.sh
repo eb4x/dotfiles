@@ -156,7 +156,4 @@ fi
 sudo systemctl enable --now sshd.service
 sudo rm /etc/sudoers.d/$USER
 
-needs-restarting -r
-if [ $? -ne 0 ]; then
-  systemctl reboot
-fi
+needs-restarting -r || systemctl reboot
