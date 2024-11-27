@@ -53,9 +53,6 @@ sudo dnf install -y \
   v4l-utils v4l2loopback \
   virt-manager virt-install
 
-# Fix container-selinux
-restorecon -R -v $HOME/.local/share/containers
-
 # Get the real stuff (in case ffmpeg-free is installed)
 sudo dnf install -y --allowerasing \
   ffmpeg

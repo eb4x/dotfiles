@@ -71,6 +71,7 @@ su - erikberg -c 'rm $HOME/.bashrc $HOME/.bash_profile'
 su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout'
 su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no'
 su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local user.email github@slipsprogrammor.no'
+su - erikberg -c 'restorecon -R $HOME'
 %end
 
 # Completion methods
