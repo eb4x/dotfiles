@@ -116,6 +116,10 @@ sshuttle --sudoers-no-modify | \
   sed -E 's/SSHUTTLE\w+/SSHUTTLE/g' | \
   sudo tee /etc/sudoers.d/sshuttle.conf > /dev/null
 
+# Find all these gsettings by using
+# `dconf watch /`
+# and do the actual change you want
+
 # Disable touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
 
