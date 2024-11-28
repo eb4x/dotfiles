@@ -117,9 +117,14 @@ sshuttle --sudoers-no-modify | \
 # `dconf watch /`
 # and do the actual change you want
 
+gsettings set org.gnome.desktop.calendar show-weekdate true               # Week numbers in calendar
+gsettings set org.gnome.desktop.interface clock-show-date false           # Use the calendar if you're unsure of the date
+gsettings set org.gnome.desktop.interface clock-format '24h'              # 24-hour clock
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'      # Dark desktop
 gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled # Disable touchpad
 gsettings set org.gnome.desktop.sound event-sounds false                  # Disable bell sounds
+
+gsettings set org.gtk.Settings.FileChooser clock-format '24h'
 
 # Enable fractional scaling
 gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
