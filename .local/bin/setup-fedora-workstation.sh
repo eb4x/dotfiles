@@ -127,6 +127,18 @@ gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffe
 # Set pinned apps in dash/dock
 gsettings set org.gnome.shell favorite-apps "['com.google.Chrome.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
 
+# Configure virt-manager
+gsettings set org.virt-manager.virt-manager xmleditor-enabled true
+gsettings set org.virt-manager.virt-manager.stats enable-cpu-poll true
+gsettings set org.virt-manager.virt-manager.stats enable-disk-poll true
+gsettings set org.virt-manager.virt-manager.stats enable-net-poll true
+gsettings set org.virt-manager.virt-manager.stats enable-memory-poll true
+gsettings set org.virt-manager.virt-manager.vmlist-fields cpu-usage true
+gsettings set org.virt-manager.virt-manager.vmlist-fields disk-usage true
+gsettings set org.virt-manager.virt-manager.vmlist-fields network-traffic true
+gsettings set org.virt-manager.virt-manager.vmlist-fields memory-usage true
+gsettings set org.virt-manager.virt-manager.confirm forcepoweroff false
+
 # Disable suspend on AC
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
