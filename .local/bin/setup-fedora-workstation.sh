@@ -124,6 +124,9 @@ gsettings set org.gnome.desktop.sound event-sounds false                  # Disa
 # Enable fractional scaling
 gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
 
+# Set pinned apps in dash/dock
+gsettings set org.gnome.shell favorite-apps "['com.google.Chrome.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
+
 # Disable suspend on AC
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
