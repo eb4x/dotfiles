@@ -117,11 +117,9 @@ sshuttle --sudoers-no-modify | \
 # `dconf watch /`
 # and do the actual change you want
 
-# Disable touchpad
-gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled
-
-# Disable bell sounds
-gsettings set org.gnome.desktop.sound event-sounds false
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'      # Dark desktop
+gsettings set org.gnome.desktop.peripherals.touchpad send-events disabled # Disable touchpad
+gsettings set org.gnome.desktop.sound event-sounds false                  # Disable bell sounds
 
 # Enable fractional scaling
 gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
