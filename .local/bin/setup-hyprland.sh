@@ -38,5 +38,7 @@ for package in "${build_order[@]}"; do
 
   rpmbuild -ba $rpmbuild_topdir/SPECS/${package}.spec
 
-  sudo dnf install -y $rpmbuild_topdir/RPMS/x86_64/${package}-*.rpm
+  for package_rpm in $(rpmspec --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n' --query ${rpmbuild_topdir}/SPECS/${package}.spec); do
+    sudo dnf install --allowerasing -y $rpmbuild_topdir/RPMS/x86_64/${package_rpm}
+  done
 done
