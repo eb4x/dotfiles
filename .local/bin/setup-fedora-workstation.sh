@@ -53,6 +53,12 @@ sudo dnf install -y \
   v4l-utils v4l2loopback \
   virt-manager virt-install
 
+for sub_file in /etc/subuid /etc/subgid; do
+  if ! grep -q "$(whoami):" "${sub_file}"; then
+    echo "$(whoami):100000:65536" | sudo tee -a "${sub_file}"
+  fi
+done
+
 # Get the real stuff (in case ffmpeg-free is installed)
 sudo dnf install -y --allowerasing \
   ffmpeg
