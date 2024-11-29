@@ -35,7 +35,7 @@ if [ ! -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
   sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
 fi
 
-if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
   sudo dnf remove -y firefox firefox-langpacks
 fi
 
@@ -96,7 +96,7 @@ flatpak install -y --user flathub org.ghidra_sre.Ghidra
 flatpak install -y --user flathub org.gnome.Evolution
 flatpak install -y --user flathub us.zoom.Zoom
 
-if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
   flatpak install -y --user flathub com.google.Chrome
   flatpak install -y --user flathub com.obsproject.Studio
   flatpak install -y --user flathub com.valvesoftware.Steam
