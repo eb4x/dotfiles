@@ -136,8 +136,11 @@ gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffe
 gsettings set org.gnome.mutter workspaces-only-on-primary false                      # Workspaces everywhere!
 
 # Set pinned apps in dash/dock
-gsettings set org.gnome.shell favorite-apps "['com.google.Chrome.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
-
+if [ -f $HOME/.local/share/flatpak/exports/share/application/com.google.Chrome.desktop ]; then
+  gsettings set org.gnome.shell favorite-apps "['com.google.Chrome.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
+else
+  gsettings set org.gnome.shell favorite-apps "['google-chrome.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
+fi
 # Configure virt-manager
 gsettings set org.virt-manager.virt-manager xmleditor-enabled true
 gsettings set org.virt-manager.virt-manager.stats enable-cpu-poll true
