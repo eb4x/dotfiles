@@ -37,6 +37,8 @@ menu Operating systems
 item almalinux-9 AlmaLinux 9
 item fedora-41   Fedora 41
 item fedora-40   Fedora 40
+item --gap --
+item local Cached installers
 choose os
 goto ${os}
 
@@ -58,6 +60,9 @@ set fedora-inst-repo-url ${fedora-mirror-url}/40/Everything/x86_64/os
 kernel ${fedora-inst-repo-url}/images/pxeboot/vmlinuz ip=dhcp inst.repo=${fedora-inst-repo-url} inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
 initrd ${fedora-inst-repo-url}/images/pxeboot/initrd.img
 boot
+
+:local
+chain cached.ipxe
 EOF
 fi
 
