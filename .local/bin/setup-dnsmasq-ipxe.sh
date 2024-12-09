@@ -41,8 +41,8 @@ choose os
 goto ${os}
 
 :almalinux-9
-kernel https://almalinux.uib.no/9.4/BaseOS/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.repo=https://almalinux.uib.no/9.4/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
-initrd https://almalinux.uib.no/9.4/BaseOS/x86_64/os/images/pxeboot/initrd.img
+kernel https://almalinux.uib.no/9/BaseOS/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.repo=https://almalinux.uib.no/9/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
+initrd https://almalinux.uib.no/9/BaseOS/x86_64/os/images/pxeboot/initrd.img
 boot
 
 :fedora-41
