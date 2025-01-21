@@ -46,6 +46,7 @@ sudo dnf install -y \
   mpv \
   neovim \
   podman podman-docker skopeo \
+  python3-devel \
   python3-pip \
   sshfs \
   Thunar \
