@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
+sudo chmod 0440 /etc/sudoers.d/$USER
+
 tftp_root=$HOME/src/tftp
 
 for releasever in 8 9; do
@@ -65,3 +68,5 @@ kernel http://\${next-server}:8000/gparted/${gparted_version}/live/vmlinuz boot=
 initrd http://\${next-server}:8000/gparted/${gparted_version}/live/initrd.img
 boot
 EOF
+
+sudo rm /etc/sudoers.d/$USER
