@@ -39,17 +39,18 @@ choose os
 goto ${os}
 
 :almalinux-9
-kernel http://${next-server}/almalinux/9/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://${next-server}/almalinux/9/x86_64/os inst.repo=https://almalinux.uib.no/9/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
-initrd http://${next-server}/almalinux/9/x86_64/os/images/pxeboot/initrd.img
+kernel http://${next-server}:8000/almalinux/9/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://${next-server}:8000/almalinux/9/x86_64/os inst.repo=https://almalinux.uib.no/9/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
+initrd http://${next-server}:8000/almalinux/9/x86_64/os/images/pxeboot/initrd.img
 boot
 
 :almalinux-8
-kernel http://${next-server}/almalinux/8/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://${next-server}/almalinux/8/x86_64/os inst.repo=https://almalinux.uib.no/8/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
-initrd http://${next-server}/almalinux/8/x86_64/os/images/pxeboot/initrd.img
+kernel http://${next-server}:8000/almalinux/8/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://${next-server}:8000/almalinux/8/x86_64/os inst.repo=https://almalinux.uib.no/8/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
+initrd http://${next-server}:8000/almalinux/8/x86_64/os/images/pxeboot/initrd.img
 boot
 
 :fedora-41
-kernel http://${next-server}/fedora/41/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://${next-server}/fedora/41/x86_64/os inst.repo=https://fedora.uib.no/fedora/linux/releases/41/Everything/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
-initrd http://${next-server}/fedora/41/x86_64/os/images/initrd.img
+kernel http://${next-server}:8000/fedora/41/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://${next-server}:8000/fedora/41/x86_64/os inst.repo=https://fedora.uib.no/fedora/linux/releases/41/Everything/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
+initrd http://${next-server}:8000/fedora/41/x86_64/os/images/initrd.img
+boot
 boot
 EOF
