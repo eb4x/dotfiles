@@ -42,6 +42,7 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 -firefox
 
 bash-completion
+bsdtar
 git-core
 python3-pip
 Thunar

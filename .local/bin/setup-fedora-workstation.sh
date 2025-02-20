@@ -41,13 +41,13 @@ fi
 
 sudo dnf upgrade -y
 sudo dnf install -y \
-  htop iftop iotop \
+  bsdtar \
   flatpak \
+  htop iftop iotop \
   mpv \
   neovim \
   podman podman-docker skopeo \
-  python3-devel \
-  python3-pip \
+  python3-devel python3-pip \
   sshfs \
   Thunar \
   tmux \

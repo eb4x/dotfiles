@@ -31,6 +31,7 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 @^minimal-environment
 
 bash-completion
+bsdtar
 git-core
 python3-pip
 
