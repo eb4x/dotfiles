@@ -1,0 +1,17 @@
+if command -v aws_completer &> /dev/null; then
+  complete -C $(which aws_completer) aws
+fi
+
+if command -v packer &> /dev/null; then
+  complete -C $(which packer) packer
+fi
+
+if command -v terraform &> /dev/null; then
+  complete -C $(which terraform) terraform
+fi
+
+if command -v vault &> /dev/null; then
+  complete -C $(which vault) vault
+fi
+
+
