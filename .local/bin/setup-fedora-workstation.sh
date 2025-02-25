@@ -60,6 +60,12 @@ for sub_file in /etc/subuid /etc/subgid; do
   fi
 done
 
+# Needed for launching more than ~20 containers at a time
+cat > /etc/sysctl.d/inotify.conf <<EOF
+fs.inotify.max_user_watches = 65536
+fs.inotify.max_user_instances = 8192
+EOF
+
 # Get the real stuff (in case ffmpeg-free is installed)
 sudo dnf install -y --allowerasing \
   ffmpeg
