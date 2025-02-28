@@ -66,6 +66,13 @@ fs.inotify.max_user_watches = 65536
 fs.inotify.max_user_instances = 8192
 EOF
 
+# OSX-KVM
+cat > /etc/modprobe.d/kvm.conf <<EOF
+options kvm_intel nested=1
+options kvm_intel emulate_invalid_guest_state=0
+options kvm ignore_msrs=1 report_ignored_msrs=0
+EOF
+
 # Get the real stuff (in case ffmpeg-free is installed)
 sudo dnf install -y --allowerasing \
   ffmpeg
