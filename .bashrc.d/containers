@@ -13,3 +13,8 @@ export DOCKER_HOST=unix:///run/user/$(id -u)/podman/podman.sock
 if [ ! -f "/var/lib/systemd/linger/$(whoami)" ]; then
   loginctl enable-linger
 fi
+
+get_registry_creds() {
+  [[ -z "$1" ]] && { echo "Usage: get_registry_creds <url>" >&2; return 1; }
+  jq -r --arg url "$1" '.auths[$url].auth | @base64d | split(":")' "$REGISTRY_AUTH_FILE"
+}
