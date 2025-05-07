@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
+sudo chmod 0440 /etc/sudoers.d/$USER
+
 mkdir -p $HOME/src
 if [ ! -d $HOME/src/Hyprland ]; then
   git clone --recursive https://github.com/hyprwm/Hyprland.git $HOME/src/Hyprland
@@ -42,3 +45,5 @@ for package in "${build_order[@]}"; do
     sudo dnf install --allowerasing -y $rpmbuild_topdir/RPMS/x86_64/${package_rpm}
   done
 done
+
+sudo rm /etc/sudoers.d/$USER
