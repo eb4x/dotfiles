@@ -16,5 +16,5 @@ fi
 
 get_registry_creds() {
   [[ -z "$1" ]] && { echo "Usage: get_registry_creds <url>" >&2; return 1; }
-  jq -r --arg url "$1" '.auths[$url].auth | @base64d | split(":") | {user: .[0], pass: (.[1:] | join(":")) }' "$REGISTRY_AUTH_FILE"
+  jq -r --arg url "$1" '.auths[$url].auth | @base64d | split(":") | {user: .[0], pass: (.[1:] | join(":"))}' "$REGISTRY_AUTH_FILE"
 }
