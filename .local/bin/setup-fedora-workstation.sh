@@ -115,6 +115,7 @@ if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; 
   flatpak install -y --user flathub com.obsproject.Studio
   flatpak install -y --user flathub com.transmissionbt.Transmission
   flatpak install -y --user flathub com.valvesoftware.Steam
+  flatpak install -y --user flathub io.github.TransmissionRemoteGtk
   flatpak install -y --user flathub org.mozilla.firefox
   flatpak install -y --user flathub org.videolan.VLC
 fi
