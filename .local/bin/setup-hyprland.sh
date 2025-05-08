@@ -30,6 +30,8 @@ mkdir -p $HOME/src/rpms
 for package in "${build_order[@]}"; do
   if [ ! -d "$HOME/src/rpms/$package" ]; then
     git clone "${repos[$package]}" "$HOME/src/rpms/$package"
+  else
+    git -C "$HOME/src/rpms/$package" pull --rebase --autostash
   fi
 
   cp "$HOME/src/rpms/${package}/${package}.spec" "$rpmbuild_topdir/SPECS/"
