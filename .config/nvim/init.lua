@@ -18,6 +18,11 @@ vim.opt.rtp:prepend(lazypath)
 vim.cmd("filetype plugin indent off")
 vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
+vim.opt.modeline = true
+
+--vim.opt.diffopt = "internal,filler,closeoff,linematch:60"
+--vim.opt.diffopt = "filler,internal,closeoff,algorithm:histogram,context:5,linematch:60"
+vim.opt.diffopt = "internal,filler,closeoff,indent-heuristic,linematch:60,algorithm:histogram"
 
 vim.opt.list = true
 vim.opt.listchars:append {
