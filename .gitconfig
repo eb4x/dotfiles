@@ -17,3 +17,5 @@
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 [rebase]
 	updateRefs = true
+[rerere]
+	enabled = true
