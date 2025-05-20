@@ -54,6 +54,10 @@ sudo dnf install -y \
   v4l-utils v4l2loopback \
   virt-manager virt-install
 
+# Get the real stuff (in case ffmpeg-free is installed)
+sudo dnf install -y --allowerasing \
+  ffmpeg
+
 for sub_file in /etc/subuid /etc/subgid; do
   if ! grep -q "$(whoami):" "${sub_file}"; then
     echo "$(whoami):100000:65536" | sudo tee -a "${sub_file}"
@@ -72,10 +76,6 @@ options kvm_intel nested=1
 options kvm_intel emulate_invalid_guest_state=0
 options kvm ignore_msrs=1 report_ignored_msrs=0
 EOF
-
-# Get the real stuff (in case ffmpeg-free is installed)
-sudo dnf install -y --allowerasing \
-  ffmpeg
 
 if ! groups $USER | grep -q libvirt; then
   sudo usermod -aG libvirt $USER
