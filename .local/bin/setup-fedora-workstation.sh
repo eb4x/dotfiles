@@ -81,6 +81,18 @@ if ! groups $USER | grep -q libvirt; then
   sudo usermod -aG libvirt $USER
 fi
 
+mkdir -p $HOME/.local/share/libvirt/images
+if ! virsh pool-info "$USER" &> /dev/null; then
+  virsh pool-define-as "$USER" dir --target $HOME/.local/share/libvirt/images
+  virsh pool-start "$USER"
+  virsh pool-autostart "$USER"
+fi
+
+if [ ! -f $HOME/.local/share/libvirt/images/virtio-win.iso ]; then
+  curl -sL "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso" \
+    -o "$HOME/.local/share/libvirt/images/virtio-win.iso"
+fi
+
 if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   sudo dnf install -y \
     libvirt-devel \
