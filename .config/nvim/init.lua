@@ -15,7 +15,10 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.cmd("filetype indent off")
 vim.cmd("filetype plugin indent off")
+vim.opt.autoindent = false
+
 vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
 vim.opt.modeline = true
