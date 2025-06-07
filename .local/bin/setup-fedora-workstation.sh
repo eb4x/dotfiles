@@ -64,6 +64,12 @@ for sub_file in /etc/subuid /etc/subgid; do
   fi
 done
 
+# ZSA Voyager
+sudo tee /etc/udev/rules.d/50-zsa.rules > /dev/null <<EOF
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0660", GROUP="wheel", TAG+="uaccess"
+SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
+EOF
+
 # Needed for launching more than ~20 containers at a time
 sudo tee /etc/sysctl.d/inotify.conf > /dev/null <<EOF
 fs.inotify.max_user_watches = 65536
