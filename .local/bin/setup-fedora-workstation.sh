@@ -124,6 +124,7 @@ flatpak install -y --user flathub org.gnome.Evolution
 flatpak install -y --user flathub us.zoom.Zoom
 
 if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
+  flatpak install -y --user flathub com.discordapp.Discord
   flatpak install -y --user flathub com.google.Chrome
   flatpak install -y --user flathub com.obsproject.Studio
   flatpak install -y --user flathub com.transmissionbt.Transmission
