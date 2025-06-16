@@ -6,7 +6,7 @@ sudo chmod 0440 /etc/sudoers.d/$USER
 
 tftp_root=$HOME/src/tftp
 
-for releasever in 8 9; do
+for releasever in 8 9 10; do
   work_dir=$tftp_root/almalinux/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
@@ -18,7 +18,7 @@ for releasever in 8 9; do
   done
 done
 
-for releasever in 41; do
+for releasever in 41 42; do
   work_dir=$tftp_root/fedora/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
@@ -39,11 +39,17 @@ fi
 sudo tee /var/lib/tftp/cached.ipxe > /dev/null << EOF
 #!ipxe
 
+set fedora-mirror-url https://fedora.uib.no/fedora/linux/releases
+#set fedora-mirror-url https://mirror.accum.se/mirror/fedora/linux/releases
+#set fedora-mirror-url https://mirrors.dotsrc.org/fedora-enchilada/linux/releases
+#set fedora-mirror-url https://www.nic.funet.fi/pub/mirrors/fedora.redhat.com/pub/fedora/linux/releases
+
 menu Cached installers
+item almalinux-10 AlmaLinux 10
 item almalinux-9 AlmaLinux 9
 item almalinux-8 AlmaLinux 8
+item fedora-42   Fedora 42
 item fedora-41   Fedora 41
-item fedora-40   Fedora 40
 item gparted     GParted
 choose os
 goto \${os}
@@ -58,8 +64,14 @@ kernel http://\${next-server}:8000/almalinux/8/x86_64/os/images/pxeboot/vmlinuz 
 initrd http://\${next-server}:8000/almalinux/8/x86_64/os/images/pxeboot/initrd.img
 boot
 
+:fedora-42
+set fedora-inst-repo-url \${fedora-mirror-url}/42/Everything/\${arch}/os
+kernel http://\${next-server}:8000/fedora/42/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/fedora/41/x86_64/os inst.repo=\${fedora-inst-repo-url} inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
+initrd http://\${next-server}:8000/fedora/42/x86_64/os/images/initrd.img
+boot
 :fedora-41
-kernel http://\${next-server}:8000/fedora/41/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/fedora/41/x86_64/os inst.repo=https://fedora.uib.no/fedora/linux/releases/41/Everything/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
+set fedora-inst-repo-url \${fedora-mirror-url}/41/Everything/\${arch}/os
+kernel http://\${next-server}:8000/fedora/41/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/fedora/41/x86_64/os inst.repo=\${fedora-inst-repo-url} inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
 initrd http://\${next-server}:8000/fedora/41/x86_64/os/images/initrd.img
 boot
 
