@@ -4,8 +4,28 @@ set -euo pipefail
 echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
 sudo chmod 0440 /etc/sudoers.d/$USER
 
-tftp_root=$HOME/src/tftp
+# Needs selinux relabeling to allow both dnsmasq and nginx
+semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
+restorecon -Rv /var/lib/tftp
+if [[ -d /etc/nginx/conf.d ]]; then
+  sudo tee /etc/nginx/conf.d/tftp.conf > /dev/null << EOF
+# vim: ft=nginx
 
+server {
+    listen 8000;
+    server_name localhost;
+
+    location / {
+        root /var/lib/tftp;
+        autoindex on;
+        sendfile on;
+        default_type application/octet-stream;
+    }
+}
+EOF
+fi
+
+tftp_root=/var/lib/tftp
 for releasever in 8 9 10; do
   work_dir=$tftp_root/almalinux/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
@@ -13,7 +33,7 @@ for releasever in 8 9 10; do
   http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      sudo curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
     fi
   done
 done
@@ -22,10 +42,11 @@ for releasever in 41 42; do
   work_dir=$tftp_root/fedora/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
+  #http_root=https://fedora.uib.no/fedora/linux/releases/$releasever/Everything/x86_64/os
   http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/$releasever/Everything/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      sudo curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
     fi
   done
 done
