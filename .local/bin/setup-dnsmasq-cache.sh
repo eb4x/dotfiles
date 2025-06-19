@@ -4,6 +4,10 @@ set -euo pipefail
 echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
 sudo chmod 0440 /etc/sudoers.d/$USER
 
+tftp_root=/var/lib/tftp
+sudo mkdir -p $tftp_root
+sudo chown -R $USER:$USER $tftp_root
+
 # Needs selinux relabeling to allow both dnsmasq and nginx
 sudo semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
 sudo restorecon -Rv /var/lib/tftp
@@ -25,7 +29,6 @@ server {
 EOF
 fi
 
-tftp_root=/var/lib/tftp
 for releasever in 8 9 10; do
   work_dir=$tftp_root/almalinux/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
@@ -33,7 +36,7 @@ for releasever in 8 9 10; do
   http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      sudo curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
     fi
   done
 done
@@ -46,7 +49,7 @@ for releasever in 41 42; do
   http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/$releasever/Everything/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      sudo curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
     fi
   done
 done
@@ -57,7 +60,7 @@ if [ ! -d "${tftp_root}/gparted/${gparted_version}" ]; then
   curl -L https://sourceforge.net/projects/gparted/files/gparted-live-stable/${gparted_version}/gparted-live-${gparted_version}-amd64.zip/download | sudo bsdtar --extract --file - --directory $tftp_root/gparted/${gparted_version}
 fi
 
-sudo tee /var/lib/tftp/cached.ipxe > /dev/null << EOF
+tee /var/lib/tftp/cached.ipxe > /dev/null << EOF
 #!ipxe
 
 set fedora-mirror-url https://fedora.uib.no/fedora/linux/releases
