@@ -5,8 +5,8 @@ echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
 sudo chmod 0440 /etc/sudoers.d/$USER
 
 # Needs selinux relabeling to allow both dnsmasq and nginx
-semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
-restorecon -Rv /var/lib/tftp
+sudo semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
+sudo restorecon -Rv /var/lib/tftp
 if [[ -d /etc/nginx/conf.d ]]; then
   sudo tee /etc/nginx/conf.d/tftp.conf > /dev/null << EOF
 # vim: ft=nginx
@@ -75,6 +75,11 @@ item gparted     GParted
 choose os
 goto \${os}
 
+:almalinux-10
+kernel http://\${next-server}:8000/almalinux/10/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/almalinux/10/x86_64/os inst.repo=https://almalinux.uib.no/10/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
+initrd http://\${next-server}:8000/almalinux/10/x86_64/os/images/pxeboot/initrd.img
+boot
+
 :almalinux-9
 kernel http://\${next-server}:8000/almalinux/9/x86_64/os/images/pxeboot/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/almalinux/9/x86_64/os inst.repo=https://almalinux.uib.no/9/BaseOS/x86_64/os inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux-9.ks
 initrd http://\${next-server}:8000/almalinux/9/x86_64/os/images/pxeboot/initrd.img
@@ -90,6 +95,7 @@ set fedora-inst-repo-url \${fedora-mirror-url}/42/Everything/\${arch}/os
 kernel http://\${next-server}:8000/fedora/42/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/fedora/41/x86_64/os inst.repo=\${fedora-inst-repo-url} inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
 initrd http://\${next-server}:8000/fedora/42/x86_64/os/images/initrd.img
 boot
+
 :fedora-41
 set fedora-inst-repo-url \${fedora-mirror-url}/41/Everything/\${arch}/os
 kernel http://\${next-server}:8000/fedora/41/x86_64/os/images/vmlinuz ip=dhcp inst.stage2=http://\${next-server}:8000/fedora/41/x86_64/os inst.repo=\${fedora-inst-repo-url} inst.ks=https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
