@@ -120,6 +120,21 @@ SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="06
 SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
 EOF
 
+sudo tee /etc/NetworkManager/conf.d/dnsmasq.conf > /dev/null <<EOF
+[main]
+dns=dnsmasq
+EOF
+
+sudo tee /etc/NetworkManager/dnsmasq.d/nrec.conf > /dev/null <<EOF
+server=/erikberg.uiocloud.no/158.37.63.251
+server=/erikberg.uiocloud.no/158.39.77.251
+EOF
+
+sudo mkdir -p /etc/systemd/resolved.conf.d
+sudo tee /etc/systemd/resolved.conf.d/override.conf > /dev/null <<EOF
+[Resolve]
+DNSStubListener=no
+EOF
 
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
