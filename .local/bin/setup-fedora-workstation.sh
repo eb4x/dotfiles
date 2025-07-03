@@ -58,17 +58,13 @@ sudo dnf install -y \
 sudo dnf install -y --allowerasing \
   ffmpeg
 
+sudo touch /etc/containers/nodocker
+
 for sub_file in /etc/subuid /etc/subgid; do
   if ! grep -q "$(whoami):" "${sub_file}"; then
     echo "$(whoami):100000:65536" | sudo tee -a "${sub_file}"
   fi
 done
-
-# ZSA Voyager
-sudo tee /etc/udev/rules.d/50-zsa.rules > /dev/null <<EOF
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0660", GROUP="wheel", TAG+="uaccess"
-SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
-EOF
 
 # Needed for launching more than ~20 containers at a time
 sudo tee /etc/sysctl.d/inotify.conf > /dev/null <<EOF
@@ -118,7 +114,12 @@ if lsmod | grep -q i915; then
     libva-utils
 fi
 
-sudo touch /etc/containers/nodocker
+# ZSA Voyager
+sudo tee /etc/udev/rules.d/50-zsa.rules > /dev/null <<EOF
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0660", GROUP="wheel", TAG+="uaccess"
+SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
+EOF
+
 
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
