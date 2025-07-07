@@ -138,6 +138,7 @@ EOF
 
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+flatpak install -y --user flathub com.github.tchx84.Flatseal
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
 flatpak install -y --user flathub com.vivaldi.Vivaldi
