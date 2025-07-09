@@ -114,6 +114,7 @@ esac
 
 %end
 
+repo --name=updates
 %include /tmp/rpmfusion.repo
 %include /tmp/partitioning.ks
 
