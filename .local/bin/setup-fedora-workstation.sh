@@ -60,6 +60,20 @@ sudo dnf install -y --allowerasing \
 
 sudo touch /etc/containers/nodocker
 
+mkdir -p $HOME/.docker/cli-plugins
+if [ ! -x $HOME/.docker/cli-plugins/docker-compose ]; then
+  compose_version=$(curl -sL https://api.github.com/repos/docker/compose/releases/latest | jq -r '.tag_name')
+  curl -sL https://github.com/docker/compose/releases/download/${compose_version}/docker-compose-linux-x86_64 -o $HOME/.docker/cli-plugins/docker-compose
+  chmod +x $HOME/.docker/cli-plugins/docker-compose
+
+  # Disable podman-compose warnings
+  mkdir -p $HOME/.config/containers/containers.conf.d
+  tee $HOME/.config/containers/containers.conf.d/docker-compose.conf > /dev/null <<EOF
+[engine]
+compose_warning_logs = false
+EOF
+fi
+
 for sub_file in /etc/subuid /etc/subgid; do
   if ! grep -q "$(whoami):" "${sub_file}"; then
     echo "$(whoami):100000:65536" | sudo tee -a "${sub_file}"
