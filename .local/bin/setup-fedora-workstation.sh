@@ -73,6 +73,10 @@ if [ ! -x $HOME/.docker/cli-plugins/docker-compose ]; then
 compose_warning_logs = false
 EOF
 fi
+if [ ! -x $HOME/.local/bin/helm ]; then
+  helm_version=$(curl -sL https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
+  curl -sL https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz | tar -C $HOME/.local/bin --strip-components=1 -zx linux-amd64/helm
+fi
 
 for sub_file in /etc/subuid /etc/subgid; do
   if ! grep -q "$(whoami):" "${sub_file}"; then
@@ -85,6 +89,7 @@ sudo tee /etc/sysctl.d/inotify.conf > /dev/null <<EOF
 fs.inotify.max_user_watches = 65536
 fs.inotify.max_user_instances = 8192
 EOF
+
 
 # OSX-KVM
 sudo tee /etc/modprobe.d/kvm.conf > /dev/null <<EOF
