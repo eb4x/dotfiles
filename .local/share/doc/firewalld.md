@@ -27,9 +27,9 @@ firewall-cmd --permanent --ipset=norway --add-entries-from-file=./no-aggregated.
 
 firewall-cmd --permanent --zone=external --add-source=ipset:norway
 
-firewall-cmd --premanent --zone=internal --add-source=10.0.0.0/8
-firewall-cmd --premanent --zone=internal --add-source=172.16.0.0/12
-firewall-cmd --premanent --zone=internal --add-source=192.168.0.0/16
+firewall-cmd --permanent --zone=internal --add-source=10.0.0.0/8
+firewall-cmd --permanent --zone=internal --add-source=172.16.0.0/12
+firewall-cmd --permanent --zone=internal --add-source=192.168.0.0/16
 
 firewall-cmd --permanent --zone=drop --add-source=ipset:china
 # or
