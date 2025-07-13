@@ -16,8 +16,8 @@ firewall-cmd --reload
 
 https://www.ipdeny.com/ipblocks/
 
-Sometimes you just want to block a whole country, other times you might want to allow
-traffic from just one country.
+Sometimes you just want to block a whole country, other times you might want to
+allow traffic from just one country.
 
 ```sh
 curl -L https://www.ipdeny.com/ipblocks/data/aggregated/no-aggregated.zone -o no-aggregated.zone
@@ -26,7 +26,14 @@ firewall-cmd --permanent --new-ipset=norway --type=hash:net --option=family=inet
 firewall-cmd --permanent --ipset=norway --add-entries-from-file=./no-aggregated.zone
 
 firewall-cmd --permanent --zone=external --add-source=ipset:norway
-firewall-cmd --permanent --zone=external --add-rich-rule='rule family="ipv4" source not ipset="norway" drop'
+
+firewall-cmd --premanent --zone=internal --add-source=10.0.0.0/8
+firewall-cmd --premanent --zone=internal --add-source=172.16.0.0/12
+firewall-cmd --premanent --zone=internal --add-source=192.168.0.0/16
+
+firewall-cmd --permanent --zone=drop --add-source=ipset:china
+# or
+nmcli connection modify eno1 connection.zone drop
 
 firewall-cmd --reload
 ```
@@ -43,11 +50,11 @@ but lets leave the rest for completeness sake.
 ```javascript
 polkit.addRule(function(action, subject) {
     if ((action.id == "org.fedoraproject.FirewallD1.config" ||
-	 action.id == "org.fedoraproject.FirewallD1.direct" ||
-         action.id == "org.fedoraproject.FirewallD1.ipset" ||
+         action.id == "org.fedoraproject.FirewallD1.direct" ||
+         action.id == "org.fedoraproject.FirewallD1.ipset"  ||
          action.id == "org.fedoraproject.FirewallD1.policy" ||
-         action.id == "org.fedoraproject.FirewallD1.zone") &&
-	 subject.active == true && subject.isInGroup("wheel")) {
+         action.id == "org.fedoraproject.FirewallD1.zone")  &&
+         subject.active == true && subject.isInGroup("wheel")) {
          return polkit.Result.YES;
     }
 });
