@@ -38,6 +38,7 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 bash-completion
 bsdtar
 git-core
+kernel-modules-extra
 python3-pip
 Thunar
 
