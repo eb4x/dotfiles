@@ -166,6 +166,10 @@ flatpak install -y --user flathub org.gimp.GIMP
 flatpak install -y --user flathub org.gnome.Evolution
 flatpak install -y --user flathub us.zoom.Zoom
 
+if [[ $(hostname --short) != "bonnie" && $(hostname --short) != "hedril" ]]; then
+  flatpak install -y --user flathub app.eduroam.geteduroam
+fi
+
 if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
   flatpak install -y --user flathub com.discordapp.Discord
   flatpak install -y --user flathub com.google.Chrome
