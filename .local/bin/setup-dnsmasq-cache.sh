@@ -8,6 +8,9 @@ tftp_root=/var/lib/tftp
 sudo mkdir -p $tftp_root
 sudo chown -R $USER:$USER $tftp_root
 
+alma_releases=(8 9 10)
+fedora_releases=(41 42 43)
+
 # Needs selinux relabeling to allow both dnsmasq and nginx
 sudo semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
 sudo restorecon -Rv /var/lib/tftp
@@ -29,7 +32,7 @@ server {
 EOF
 fi
 
-for releasever in 8 9 10; do
+for releasever in "${alma_releases[@]}"; do
   work_dir=$tftp_root/almalinux/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
@@ -41,7 +44,7 @@ for releasever in 8 9 10; do
   done
 done
 
-for releasever in 41 42; do
+for releasever in "${fedora_releases[@]}"; do
   work_dir=$tftp_root/fedora/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
