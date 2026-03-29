@@ -32,6 +32,20 @@ server {
 EOF
 fi
 
+download_file() {
+  local url=$1
+  local dest=$2
+
+  local http_code
+  http_code=$(curl --silent -L "$url" --output "$dest" --write-out "%{http_code}")
+
+  if [[ "$http_code" != 2* ]]; then
+    echo "ERROR: Got HTTP $http_code for $url" >&2
+    rm -f "$dest"  # Don't leave a junk HTML file behind
+    return 1
+  fi
+}
+
 for releasever in "${alma_releases[@]}"; do
   work_dir=$tftp_root/almalinux/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
@@ -39,7 +53,7 @@ for releasever in "${alma_releases[@]}"; do
   http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      download_file "$http_root/$pxe_file" "$work_dir/$pxe_file"
     fi
   done
 done
@@ -52,7 +66,7 @@ for releasever in "${fedora_releases[@]}"; do
   http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/$releasever/Everything/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
-      curl -L "$http_root/$pxe_file" -o $work_dir/$pxe_file
+      download_file "$http_root/$pxe_file" "$work_dir/$pxe_file"
     fi
   done
 done
