@@ -9,7 +9,7 @@ sudo mkdir -p $tftp_root
 sudo chown -R $USER:$USER $tftp_root
 
 alma_releases=(8 9 10)
-fedora_releases=(41 42 43)
+fedora_releases=(42 43 44_Beta)
 
 # Needs selinux relabeling to allow both dnsmasq and nginx
 sudo semanage fcontext -a -t public_content_t "/var/lib/tftp(/.*)?"
@@ -58,12 +58,17 @@ for releasever in "${alma_releases[@]}"; do
   done
 done
 
+declare -A fedora_release_paths=(
+  [44_Beta]="test/44_Beta"
+)
+
 for releasever in "${fedora_releases[@]}"; do
   work_dir=$tftp_root/fedora/$releasever/x86_64/os
   mkdir -p $work_dir/images/pxeboot
 
-  #http_root=https://fedora.uib.no/fedora/linux/releases/$releasever/Everything/x86_64/os
-  http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/$releasever/Everything/x86_64/os
+  release_path="${fedora_release_paths[$releasever]:-$releasever}"
+  #http_root=https://fedora.uib.no/fedora/linux/releases/${release_path}/Everything/x86_64/os
+  http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/${release_path}/Everything/x86_64/os
   for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
       download_file "$http_root/$pxe_file" "$work_dir/$pxe_file"
