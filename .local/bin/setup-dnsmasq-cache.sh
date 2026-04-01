@@ -58,6 +58,18 @@ for releasever in "${alma_releases[@]}"; do
   done
 done
 
+for releasever in 10; do
+  work_dir=$tftp_root/almalinux/$releasever/x86_64_v2/os
+  mkdir -p $work_dir/images/pxeboot
+
+  http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64_v2/os
+  for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
+    if [ ! -f $work_dir/$pxe_file ]; then
+      download_file "$http_root/$pxe_file" "$work_dir/$pxe_file"
+    fi
+  done
+done
+
 declare -A fedora_release_paths=(
   [44_Beta]="test/44_Beta"
 )
