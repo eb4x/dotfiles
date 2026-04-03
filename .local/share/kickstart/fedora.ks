@@ -22,6 +22,11 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 %pre --interpreter=/usr/bin/bash
 source /etc/os-release
 
+echo "repo --name=updates" > /tmp/updates.repo
+if [[ "${VERSION_ID}" == "44" ]]; then
+  echo "repo --name=updates-testing" >> /tmp/updates.repo
+fi
+
 declare -A rpmfusion_release_path=(
   [44]="development"
 )
@@ -130,7 +135,7 @@ echo '%end' >> /tmp/packages.ks
 
 %end
 
-repo --name=updates
+%include /tmp/updates.repo
 %include /tmp/rpmfusion.repo
 %include /tmp/partitioning.ks
 %include /tmp/packages.ks
