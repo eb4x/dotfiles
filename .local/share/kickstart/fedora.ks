@@ -30,6 +30,7 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 -unoconv
 
 -nautilus
+-papers-nautilus
 -gnome-classic-session
 -gnome-classic-session-xsession
 
