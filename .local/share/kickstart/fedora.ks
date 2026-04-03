@@ -19,34 +19,6 @@ rootpw --lock
 user --name=erikberg --groups=wheel --password=changeme --gecos="Erik Berg"
 sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBIBDkDbOgeJHXOM9PZo2Nok5MB5AoRPndSLDIbE22mb743KFJpY4WRvDLoSUc0zTXu5yLv8lQ+8301KaBatCFaHCbEG7z4AWIv4VQEao5bu/qK6xnXwEAUmwGHddZky74A== erikberg_ecdsa"
 
-%packages
-@^workstation-product-environment
-#@^sway-desktop-environment
-@swaywm
-#@swaywm-extended
-#sway-config-fedora
-
--libreoffice-calc
--unoconv
-
--nautilus
--papers-nautilus
--gnome-classic-session
--gnome-classic-session-xsession
-
--firefox
-
-bash-completion
-bsdtar
-git-core
-kernel-modules-extra
-python3-pip
-Thunar
-
-rpmfusion-free-release
-rpmfusion-nonfree-release
-%end
-
 %pre --interpreter=/usr/bin/bash
 source /etc/os-release
 
@@ -57,13 +29,16 @@ declare -A rpmfusion_update_path=(
   [44]="updates/testing"
 )
 
-cat << EOF > /tmp/rpmfusion.repo
+if ! grep -qw inst.norpmfusion /proc/cmdline; then
+  cat << EOF > /tmp/rpmfusion.repo
 repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
 repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
 repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
 repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
 EOF
-
+else
+  touch /tmp/rpmfusion.repo
+fi
 
 declare -A uuid_host=(
   [4c4c4544-0051-3810-8036-b9c04f5a5831]="lee"
@@ -117,11 +92,47 @@ EOF
     ;;
 esac
 
+echo '%packages' > /tmp/packages.ks
+cat << 'EOF' >> /tmp/packages.ks
+@^workstation-product-environment
+#@^sway-desktop-environment
+@swaywm
+#@swaywm-extended
+#sway-config-fedora
+
+-libreoffice-calc
+-unoconv
+
+-nautilus
+-papers-nautilus
+-gnome-classic-session
+-gnome-classic-session-xsession
+
+-firefox
+
+bash-completion
+bsdtar
+git-core
+kernel-modules-extra
+python3-pip
+Thunar
+EOF
+
+if ! grep -qw inst.norpmfusion /proc/cmdline; then
+  cat << 'EOF' >> /tmp/packages.ks
+rpmfusion-free-release
+rpmfusion-nonfree-release
+EOF
+fi
+
+echo '%end' >> /tmp/packages.ks
+
 %end
 
 repo --name=updates
 %include /tmp/rpmfusion.repo
 %include /tmp/partitioning.ks
+%include /tmp/packages.ks
 
 %post --interpreter=/usr/bin/bash --log=/root/ks-post.log
 chage -d 0 erikberg
