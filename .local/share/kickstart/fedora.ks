@@ -98,7 +98,7 @@ EOF
     (IFS=','; echo "clearpart --drives=${disks[*]:0:${clearpart_count}} --all --initlabel" >> /tmp/partitioning.ks)
 
     cat << EOF >> /tmp/partitioning.ks
-part /boot/efi --ondisk=${disks[0]} --fstype="efi" --size=600 --label=uefi--fsoptions="umask=0077,shortname=winnt"
+part /boot/efi --ondisk=${disks[0]} --fstype="efi" --size=1024 --label=uefi--fsoptions="umask=0077,shortname=winnt"
 part /boot --ondisk=${disks[0]} --fstype="ext4" --size=1024 --label=boot --fsoptions="defaults,discard"
 part /     --ondisk=${disks[0]} --fstype="xfs"  --grow      --label=root --fsoptions="defaults,discard,noatime"
 EOF
