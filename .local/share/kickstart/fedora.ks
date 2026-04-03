@@ -44,16 +44,23 @@ Thunar
 
 rpmfusion-free-release
 rpmfusion-nonfree-release
-
 %end
 
 %pre --interpreter=/usr/bin/bash
 source /etc/os-release
+
+declare -A rpmfusion_release_path=(
+  [44]="development"
+)
+declare -A rpmfusion_update_path=(
+  [44]="updates/testing"
+)
+
 cat << EOF > /tmp/rpmfusion.repo
-repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/releases/${VERSION_ID}/Everything/x86_64/os/
-repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/updates/${VERSION_ID}/x86_64/
-repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/releases/${VERSION_ID}/Everything/x86_64/os/
-repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/updates/${VERSION_ID}/x86_64/
+repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
+repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
 EOF
 
 
