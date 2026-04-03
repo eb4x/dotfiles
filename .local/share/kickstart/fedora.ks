@@ -41,6 +41,7 @@ else
 fi
 
 declare -A uuid_host=(
+  [eb4ba24c-3055-11b2-a85c-af8d7e1c452d]="bonnie"
   [4c4c4544-0051-3810-8036-b9c04f5a5831]="lee"
   [30be1077-acee-47dc-ba5f-785287a8684c]="lizzie"
 )
