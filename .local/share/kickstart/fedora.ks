@@ -92,6 +92,7 @@ ignoredisk --only-use=${disks[0]}
 clearpart --drives=${disks[0]} --all --initlabel
 autopart
 EOF
+    ;;
   lizzie)
     (IFS=','; echo "ignoredisk --only-use=${disks[*]:0:${disk_count}}" >> /tmp/partitioning.ks)
     (IFS=','; echo "clearpart --drives=${disks[*]:0:${clearpart_count}} --all --initlabel" >> /tmp/partitioning.ks)
@@ -107,7 +108,7 @@ part /boot --ondisk=${disks[0]} --fstype="ext4" --size=1024 --label=boot --fsopt
 part /     --ondisk=${disks[0]} --fstype="xfs"  --grow      --label=root --fsoptions="defaults,discard,noatime"
 EOF
     if (( keephome )); then
-      echo "part /home --onpart=${disks[2]} --fstype=\"xfs\" --grow --label=home --fsoptions=\"defaults,discard,noatime\" --noformat >> /tmp/partitioning.ks
+      echo "part /home --onpart=${disks[2]} --fstype=\"xfs\" --grow --label=home --fsoptions=\"defaults,discard,noatime\" --noformat" >> /tmp/partitioning.ks
     else
       echo "part /home --ondisk=${disks[1]} --fstype=\"xfs\" --grow --label=home --fsoptions=\"defaults,discard,noatime\"" >> /tmp/partitioning.ks
     fi
