@@ -23,7 +23,7 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 source /etc/os-release
 
 echo "repo --name=updates" > /tmp/updates.repo
-if [[ "${VERSION_ID}" == "44" ]]; then
+if [[ "${VERSION_ID}" == "44" && "${RELEASE_TYPE:-stable}" == "development" ]]; then
   echo "repo --name=updates-testing" >> /tmp/updates.repo
 fi
 
