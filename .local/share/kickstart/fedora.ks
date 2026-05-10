@@ -91,7 +91,7 @@ EOF
     fi
     ;;
   *)
-    cat << EOF > /tmp/partitioning.ks
+    cat << EOF >> /tmp/partitioning.ks
 autopart
 clearpart --drives=nvme0n1|sda|vda --all --initlabel
 EOF
