@@ -23,25 +23,23 @@ sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQA
 source /etc/os-release
 
 echo "repo --name=updates" > /tmp/updates.repo
-if [[ "${VERSION_ID}" == "44" && "${RELEASE_TYPE:-stable}" == "development" ]]; then
+if [[ "${RELEASE_TYPE:-stable}" == "development" ]]; then
   echo "repo --name=updates-testing" >> /tmp/updates.repo
+  rpmfusion_release_path="development"
+  rpmfusion_update_path="updates/testing"
+else
+  rpmfusion_release_path="releases"
+  rpmfusion_update_path="updates"
 fi
-
-declare -A rpmfusion_release_path=(
-  [44]="development"
-)
-declare -A rpmfusion_update_path=(
-  [44]="updates/testing"
-)
 
 if grep -qw inst.norpmfusion /proc/cmdline; then
   touch /tmp/rpmfusion.repo
 else
   cat << EOF > /tmp/rpmfusion.repo
-repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
-repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
-repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_release_path[$VERSION_ID]:-releases}/${VERSION_ID}/Everything/x86_64/os/
-repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_update_path[$VERSION_ID]:-updates}/${VERSION_ID}/x86_64/
+repo --name=rpmfusion-free            --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_release_path}/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-free-updates    --baseurl=http://download1.rpmfusion.org/free/fedora/${rpmfusion_update_path}/${VERSION_ID}/x86_64/
+repo --name=rpmfusion-nonfree         --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_release_path}/${VERSION_ID}/Everything/x86_64/os/
+repo --name=rpmfusion-nonfree-updates --baseurl=http://download1.rpmfusion.org/nonfree/fedora/${rpmfusion_update_path}/${VERSION_ID}/x86_64/
 EOF
 fi
 
