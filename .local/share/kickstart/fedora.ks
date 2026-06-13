@@ -109,6 +109,8 @@ cat << 'EOF' >> /tmp/packages.ks
 -gnome-classic-session
 -gnome-classic-session-xsession
 
+-PackageKit
+-PackageKit-command-not-found
 -firefox
 
 bash-completion
