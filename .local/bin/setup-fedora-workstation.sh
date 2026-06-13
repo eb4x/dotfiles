@@ -49,7 +49,7 @@ sudo dnf install -y \
   podman podman-docker skopeo \
   python3-devel python3-pip \
   sshfs \
-  Thunar \
+  nemo \
   tmux \
   v4l-utils v4l2loopback \
   virt-manager virt-install
@@ -213,7 +213,7 @@ gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffe
 gsettings set org.gnome.mutter workspaces-only-on-primary false                      # Workspaces everywhere!
 
 # Set pinned apps in dash/dock
-gsettings set org.gnome.shell favorite-apps "['com.vivaldi.Vivaldi.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'thunar.desktop']"
+gsettings set org.gnome.shell favorite-apps "['com.vivaldi.Vivaldi.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'nemo.desktop']"
 
 # Configure virt-manager
 gsettings set org.virt-manager.virt-manager xmleditor-enabled true
