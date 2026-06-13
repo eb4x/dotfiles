@@ -118,7 +118,7 @@ bsdtar
 git-core
 kernel-modules-extra
 python3-pip
-Thunar
+nemo
 EOF
 
 if ! grep -qw inst.norpmfusion /proc/cmdline; then

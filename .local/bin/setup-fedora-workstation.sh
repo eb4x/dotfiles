@@ -49,7 +49,7 @@ sudo dnf install -y \
   podman podman-docker skopeo \
   python3-devel python3-pip \
   sshfs \
-  Thunar \
+  nemo \
   tmux \
   v4l-utils v4l2loopback \
   virt-manager virt-install
