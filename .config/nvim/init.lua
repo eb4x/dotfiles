@@ -23,9 +23,20 @@ vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
 vim.opt.modeline = true
 
---vim.opt.diffopt = "internal,filler,closeoff,linematch:60"
---vim.opt.diffopt = "filler,internal,closeoff,algorithm:histogram,context:5,linematch:60"
-vim.opt.diffopt = "internal,filler,closeoff,indent-heuristic,linematch:60,algorithm:histogram"
+-- filler: show filler lines to keep text aligned side-by-side
+-- closeoff: turn off diff mode in remaining windows when one is closed
+local diffopt = { "filler", "closeoff" }
+if vim.fn.has("nvim-0.3.2") == 1 then
+  -- internal: use built-in xdiff instead of external diff; required by the options below
+  -- indent-heuristic: prefer splitting hunks at blank lines between functions
+  -- algorithm:histogram: cleaner diffs than default Myers, same algorithm git uses
+  vim.list_extend(diffopt, { "internal", "indent-heuristic", "algorithm:histogram" })
+end
+if vim.fn.has("nvim-0.9") == 1 then
+  -- linematch: match individual lines within changed blocks (up to 60 lines)
+  table.insert(diffopt, "linematch:60")
+end
+vim.opt.diffopt = table.concat(diffopt, ",")
 
 vim.opt.list = true
 vim.opt.listchars:append {
