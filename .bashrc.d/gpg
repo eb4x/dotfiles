@@ -3,5 +3,8 @@
 # gpg --export-ownertrust > owner-trust.txt
 #
 # gpg --import-ownertrust owner-trust.txt
+# or if ownertrust export was empty,
+# use the fingerprint from gpg --list-secret-keys (hex string under sec):
+# echo "<fingerprint>:6:" | gpg --import-ownertrust  # 6 = ultimate trust
 # gpg --import secret-keys.bin
 export GPG_TTY=$(tty)
