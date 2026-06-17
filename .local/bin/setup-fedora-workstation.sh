@@ -212,6 +212,7 @@ gsettings set org.gtk.Settings.FileChooser clock-format '24h'
 gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']" # Enable fractional scaling
 gsettings set org.gnome.mutter workspaces-only-on-primary false                      # Workspaces everywhere!
 
+gsettings set org.gnome.shell always-show-log-out true
 # Set pinned apps in dash/dock
 gsettings set org.gnome.shell favorite-apps "['com.vivaldi.Vivaldi.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Ptyxis.desktop', 'nemo.desktop']"
 
