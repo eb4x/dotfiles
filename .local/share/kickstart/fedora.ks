@@ -42,6 +42,7 @@ fi
 
 declare -A uuid_host=(
   [eb4ba24c-3055-11b2-a85c-af8d7e1c452d]="bonnie"
+  [25922b64-21a1-3b4b-886c-70106fc66f10]="eden"
   [4c4c4544-0051-3810-8036-b9c04f5a5831]="lee"
   [30be1077-acee-47dc-ba5f-785287a8684c]="lizzie"
 )
@@ -94,31 +95,54 @@ EOF
 esac
 
 echo '%packages' > /tmp/packages.ks
-cat << 'EOF' >> /tmp/packages.ks
-@^workstation-product-environment
-#@^sway-desktop-environment
-@swaywm
+
+case "$host" in
+  eden|lee)
+    cat << 'EOF' >> /tmp/packages.ks
+@^server-product-environment
+EOF
+    ;;
+  mj) # experimental
+    cat << 'EOF' >> /tmp/packages.ks
+@^sway-desktop-environment
+#@swaywm
 #@swaywm-extended
 #sway-config-fedora
-
--libreoffice-calc
--unoconv
-
+EOF
+    ;;
+  *)
+    cat << 'EOF' >> /tmp/packages.ks
+@^workstation-product-environment
 -nautilus
 -papers-nautilus
 -gnome-classic-session
 -gnome-classic-session-xsession
+EOF
+    ;;
+esac
 
+case "$host" in
+  eden|lee) ;; # server editions, skip desktop package removals
+  *)
+    cat << 'EOF' >> /tmp/packages.ks
+
+-libreoffice-calc
+-unoconv
 -PackageKit
 -PackageKit-command-not-found
 -firefox
+nemo
+EOF
+    ;;
+esac
+
+cat << 'EOF' >> /tmp/packages.ks
 
 bash-completion
 bsdtar
 git-core
 kernel-modules-extra
 python3-pip
-nemo
 EOF
 
 if ! grep -qw inst.norpmfusion /proc/cmdline; then
