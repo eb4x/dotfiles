@@ -119,6 +119,8 @@ EOF
 -papers-nautilus
 -gnome-classic-session
 -gnome-classic-session-xsession
+-gnome-software
+-gnome-tour
 EOF
     ;;
 esac
