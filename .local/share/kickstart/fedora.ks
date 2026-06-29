@@ -16,6 +16,8 @@ timezone Europe/Oslo --utc
 #Root password
 rootpw --lock
 
+services --enabled=sshd
+
 user --name=erikberg --groups=wheel --password=changeme --gecos="Erik Berg"
 sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBIBDkDbOgeJHXOM9PZo2Nok5MB5AoRPndSLDIbE22mb743KFJpY4WRvDLoSUc0zTXu5yLv8lQ+8301KaBatCFaHCbEG7z4AWIv4VQEao5bu/qK6xnXwEAUmwGHddZky74A== erikberg_ecdsa"
 
