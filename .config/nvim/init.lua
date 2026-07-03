@@ -23,20 +23,23 @@ vim.api.nvim_del_keymap("n", "Y")
 vim.opt.mouse = ""
 vim.opt.modeline = true
 
--- filler: show filler lines to keep text aligned side-by-side
--- closeoff: turn off diff mode in remaining windows when one is closed
-local diffopt = { "filler", "closeoff" }
+vim.opt.diffopt = table.concat({
+  "filler",   -- show filler lines to keep text aligned side-by-side
+  "closeoff", -- turn off diff mode when one window is closed
+}, ",")
 if vim.fn.has("nvim-0.3.2") == 1 then
-  -- internal: use built-in xdiff instead of external diff; required by the options below
-  -- indent-heuristic: prefer splitting hunks at blank lines between functions
-  -- algorithm:histogram: cleaner diffs than default Myers, same algorithm git uses
-  vim.list_extend(diffopt, { "internal", "indent-heuristic", "algorithm:histogram" })
+  vim.opt.diffopt:append({
+    "internal",           -- use built-in xdiff instead of external diff; required by the options below
+    "indent-heuristic",   -- prefer diff boundaries at blank lines / block breaks,
+    "algorithm:histogram" -- cleaner diffs than default Myers
+  })
 end
 if vim.fn.has("nvim-0.9") == 1 then
-  -- linematch: match individual lines within changed blocks (up to 60 lines)
-  table.insert(diffopt, "linematch:60")
+  vim.opt.diffopt:append({ "linematch:150" }) -- match individual lines within changed blocks
 end
-vim.opt.diffopt = table.concat(diffopt, ",")
+if vim.fn.has("nvim-0.12") == 1 then
+  vim.opt.diffopt:append({ "inline:word" }) -- highlight changed words within a line, not the whole line
+end
 
 vim.opt.list = true
 vim.opt.listchars:append {
