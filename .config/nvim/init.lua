@@ -34,9 +34,9 @@ if vim.fn.has("nvim-0.3.2") == 1 then
     "algorithm:histogram" -- cleaner diffs than default Myers
   })
 end
-if vim.fn.has("nvim-0.9") == 1 then
-  vim.opt.diffopt:append({ "linematch:150" }) -- match individual lines within changed blocks
-end
+--if vim.fn.has("nvim-0.9") == 1 then
+--  vim.opt.diffopt:append({ "linematch:150" }) -- match individual lines within changed blocks
+--end
 if vim.fn.has("nvim-0.12") == 1 then
   vim.opt.diffopt:append({ "inline:word" }) -- highlight changed words within a line, not the whole line
 end
