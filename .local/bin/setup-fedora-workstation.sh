@@ -200,6 +200,9 @@ sshuttle --sudoers-no-modify | \
 # `dconf watch /`
 # and do the actual change you want
 
+# enable middle-click to paste
+gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true
+
 gsettings set org.gnome.desktop.calendar show-weekdate true               # Week numbers in calendar
 gsettings set org.gnome.desktop.interface clock-show-date false           # Use the calendar if you're unsure of the date
 gsettings set org.gnome.desktop.interface clock-format '24h'              # 24-hour clock
