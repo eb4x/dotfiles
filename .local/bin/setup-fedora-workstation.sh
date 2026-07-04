@@ -161,6 +161,7 @@ flatpak install -y --user flathub com.github.tchx84.Flatseal
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
 flatpak install -y --user flathub com.vivaldi.Vivaldi
+flatpak install -y --user flathub org.eclipse.Java
 flatpak install -y --user flathub org.ghidra_sre.Ghidra
 flatpak install -y --user flathub org.gimp.GIMP
 flatpak install -y --user flathub org.gnome.Evolution
