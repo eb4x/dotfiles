@@ -233,8 +233,17 @@ gsettings set org.virt-manager.virt-manager.confirm forcepoweroff false
 
 # Disable suspend on AC
 if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+  # User session
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-  sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
+  # GDM (login screen) session
+  if [[ ! -f "/etc/dconf/db/gdm.d/00-disable-suspend" ]]; then
+    sudo tee "/etc/dconf/db/gdm.d/00-disable-suspend" > /dev/null <<EOF
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-type='nothing'
+EOF
+    sudo dconf update
+  fi
 fi
 
 # Theme gnome-terminal (Fedora 41)
