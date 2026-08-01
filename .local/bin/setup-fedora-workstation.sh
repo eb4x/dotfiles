@@ -247,6 +247,10 @@ EOF
   fi
 fi
 
+if [ "$(xdg-settings get default-web-browser)" != "com.vivaldi.Vivaldi.desktop" ]; then
+  xdg-settings set default-web-browser com.vivaldi.Vivaldi.desktop
+fi
+
 # Theme gnome-terminal (Fedora 41)
 if (( VERSION_ID >= 41 )); then
   dconf write "/org/gnome/Ptyxis/Profiles/$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d \')/palette" "'Catppuccin Mocha'"
