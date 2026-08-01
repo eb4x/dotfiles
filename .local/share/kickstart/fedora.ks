@@ -174,6 +174,18 @@ fi
 %end
 
 %post --interpreter=/usr/bin/bash --log=/root/ks-post.log
+# The GitHub CLI doubles as git's credential helper (see ~/.gitconfig).
+cat << 'EOF' > /etc/yum.repos.d/gh-cli.repo
+[gh-cli]
+name=packages for the GitHub CLI
+baseurl=https://cli.github.com/packages/rpm
+enabled=1
+gpgcheck=1
+gpgkey=https://cli.github.com/packages/githubcli-archive-keyring.asc
+EOF
+rpm --import https://cli.github.com/packages/githubcli-archive-keyring.asc
+dnf install -y gh
+
 chage -d 0 erikberg
 if ! grep -qw inst.keephome /proc/cmdline; then
   # A bare clone sets no fetch refspec, so there are no remote-tracking refs;

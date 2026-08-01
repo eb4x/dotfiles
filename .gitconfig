@@ -19,3 +19,12 @@
 	updateRefs = true
 [rerere]
 	enabled = true
+# Written by `gh auth setup-git`. The empty helper resets the chain first, so
+# nothing inherited from system config gets a look in. Needs `gh auth login`
+# once per machine; without gh installed git just falls back to prompting.
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
