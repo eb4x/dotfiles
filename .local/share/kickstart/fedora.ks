@@ -176,11 +176,17 @@ fi
 %post --interpreter=/usr/bin/bash --log=/root/ks-post.log
 chage -d 0 erikberg
 if ! grep -qw inst.keephome /proc/cmdline; then
-  su - erikberg -c 'git clone --bare https://github.com/eb4x/dotfiles.git $HOME/.dotfiles'
+  # A bare clone sets no fetch refspec, so there are no remote-tracking refs;
+  # without them status never shows ahead/behind, and push needs explicit args.
+  su - erikberg -c 'git clone --bare \
+    -c remote.origin.fetch="+refs/heads/*:refs/remotes/origin/*" \
+    -c branch.main.remote=origin \
+    -c branch.main.merge=refs/heads/main \
+    -c status.showUntrackedFiles=no \
+    -c user.email=github@slipsprogrammor.no \
+    https://github.com/eb4x/dotfiles.git $HOME/.dotfiles'
   su - erikberg -c 'rm $HOME/.bashrc $HOME/.bash_profile'
   su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout'
-  su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no'
-  su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local user.email github@slipsprogrammor.no'
   su - erikberg -c 'restorecon -R $HOME'
 fi
 %end

@@ -1,0 +1,22 @@
+# Completion for the `dotfiles` alias defined in ~/.bashrc.d/dotfiles.
+# bash-completion loads this file on the first TAB after `dotfiles`, so it
+# costs nothing at shell startup.
+
+# Pull in git's completion, which defines __git_complete and __git_main.
+# _completion_loader (not _comp_load) is the spelling available on both
+# bash-completion 2.11 and 2.12+, where it survives as a compat shim.
+declare -F __git_complete >/dev/null || _completion_loader git
+
+# Completion only ever sees the literal word `dotfiles`, never the --git-dir
+# the alias expands to. Without pointing git at the bare repo here, it
+# completes against whatever repository you happen to be standing in.
+_comp_cmd_dotfiles()
+{
+    local -x GIT_DIR=$HOME/.dotfiles GIT_WORK_TREE=$HOME
+    __git_main
+}
+
+# Documented at the top of /usr/share/bash-completion/completions/git.
+# Generates __git_wrap_comp_cmd_dotfiles and registers it with git's own
+# option set (-o bashdefault -o default -o nospace).
+__git_complete dotfiles _comp_cmd_dotfiles
