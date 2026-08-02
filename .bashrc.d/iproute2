@@ -1,0 +1,3 @@
+# EL9's iproute2 needs asking; Fedora's already defaults to color=auto.
+# =auto matters, a bare -color means "always" and leaks escapes into pipes.
+alias ip='ip -color=auto'
