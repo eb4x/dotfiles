@@ -168,7 +168,7 @@ echo "$host" > /tmp/ks-host
 %include /tmp/packages.ks
 
 %post --nochroot --interpreter=/usr/bin/bash --log=/root/ks-post-nochroot.log
-if [[ "$(cat /tmp/ks-host)" =~ ^(eden|lee)$ ]]; then
+if [[ "$(cat /tmp/ks-host)" =~ ^(eden|lee|lizzie)$ ]]; then
   chroot /mnt/sysimage dnf copr enable -y ngompa/bcachefs
 fi
 %end
