@@ -12,6 +12,21 @@ fedora_releases=(43 44)
 # setup-dnsmasq-ipxe.sh; a bare restorecon here is just insurance.
 sudo restorecon -R $tftp_root
 
+# .treeinfo is fetched alongside the images it describes. anaconda reads it to
+# find stage2 and identify the release; without it the install still works
+# (it falls back to the conventional images/install.img layout) but every boot
+# logs a 404 for it. More usefully, it is the only thing on this path carrying
+# sha256 sums for install.img and the initrd -- we serve these over plain http
+# on the LAN, so it is the one integrity check available to the installer.
+#
+# It must come from the SAME tree as the images: the [ ! -f ] guards below mean
+# an existing cache is never refreshed, so after an upstream respin delete the
+# release directory rather than letting a new .treeinfo describe old images.
+#
+# AlmaLinux's copy declares [variant-AppStream] with a relative repository path
+# (../../../AppStream/x86_64/os) that does not resolve in our flattened local
+# layout. Harmless, because the menus always point inst.repo at the upstream
+# mirror and only take stage2 from here.
 download_file() {
   local url=$1
   local dest=$2
@@ -31,7 +46,7 @@ for releasever in "${alma_releases[@]}"; do
   mkdir -p $work_dir/images/pxeboot
 
   http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64/os
-  for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
+  for pxe_file in .treeinfo images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
       download_file "$http_root/$pxe_file" "$work_dir/$pxe_file" || echo "WARN: skipped $http_root/$pxe_file" >&2
     fi
@@ -43,7 +58,7 @@ for releasever in 10; do
   mkdir -p $work_dir/images/pxeboot
 
   http_root=https://almalinux.uib.no/$releasever/BaseOS/x86_64_v2/os
-  for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
+  for pxe_file in .treeinfo images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
       download_file "$http_root/$pxe_file" "$work_dir/$pxe_file" || echo "WARN: skipped $http_root/$pxe_file" >&2
     fi
@@ -62,7 +77,7 @@ for releasever in "${fedora_releases[@]}"; do
   release_path="${fedora_release_paths[$releasever]:-$releasever}"
   http_root=https://mirror.accum.se/mirror/fedora/linux/releases/${release_path}/Everything/x86_64/os
   #http_root=https://download.fedoraproject.org/pub/fedora/linux/releases/${release_path}/Everything/x86_64/os
-  for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
+  for pxe_file in .treeinfo images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
       download_file "$http_root/$pxe_file" "$work_dir/$pxe_file" || echo "WARN: skipped $http_root/$pxe_file" >&2
     fi
@@ -77,7 +92,7 @@ for releasever in 30; do
   mkdir -p $work_dir/images/pxeboot
 
   http_root=https://archives.fedoraproject.org/pub/archive/fedora-secondary/releases/$releasever/Everything/i386/os
-  for pxe_file in images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
+  for pxe_file in .treeinfo images/install.img images/pxeboot/initrd.img images/pxeboot/vmlinuz; do
     if [ ! -f $work_dir/$pxe_file ]; then
       download_file "$http_root/$pxe_file" "$work_dir/$pxe_file" || echo "WARN: skipped $http_root/$pxe_file" >&2
     fi
