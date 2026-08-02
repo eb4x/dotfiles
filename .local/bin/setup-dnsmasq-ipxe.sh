@@ -6,31 +6,28 @@ sudo dnf install -y dnsmasq nginx policycoreutils-python-utils
 tftp_root=/var/lib/tftp
 sudo mkdir -p $tftp_root
 
-# iPXE binaries for the first DHCP round. boot.ipxe.org rebuilds these
-# periodically, so the pinned hashes will legitimately drift -- on mismatch,
-# verify upstream, update the pin, and rerun (the mismatching file is removed).
-declare -A ipxe_urls=(
-  [undionly.kpxe]="https://boot.ipxe.org/undionly.kpxe"
-  [ipxe.efi]="https://boot.ipxe.org/x86_64-efi/ipxe.efi"
-  [ipxe-i386.efi]="https://boot.ipxe.org/i386-efi/ipxe.efi"
-)
-declare -A ipxe_sha256=(
-  [undionly.kpxe]="a0d95f804bc73690fe3bb0e3bfa8304081e6b893277b54ebcf62f925893fee0f"
-  [ipxe.efi]="536c351acb71b190a41cf618541d5c6f205b761cb38511cbbd08c0fc1cb050a3"
-  [ipxe-i386.efi]="3478e1c21e22846d9cf8a643106eb0816de27e30c002cb85428577b2e16af4c6"
-)
+# iPXE binaries for the first DHCP round, built by build-ipxe.sh and vendored in
+# this repo. Not downloaded here on purpose: boot.ipxe.org tracks git master and
+# rebuilds several times a day, publishing no version, checksum or signature --
+# there is nothing stable to pin a hash against, because the bytes behind a given
+# URL are not the same bytes an hour later. The distro packages are no better:
+# AlmaLinux 10 ships neither ipxe-x86_64.efi nor ipxe-i386.efi, and Alma 8's
+# build predates HTTPS support, so the same script would deploy a different iPXE
+# depending on which host it ran on. Vendoring means every machine boots the
+# binary that was built, tested and disassembled.
+#
+# Deployed unconditionally (like the menus below), so `build-ipxe.sh` plus a
+# `dotfiles pull` is the whole procedure for moving to a newer iPXE.
+ipxe_blobs=~/.local/share/ipxe/blobs
 
-for ipxe_file in "${!ipxe_urls[@]}"; do
-  if [ ! -f $tftp_root/$ipxe_file ]; then
-    sudo curl -fL "${ipxe_urls[$ipxe_file]}" -o $tftp_root/$ipxe_file
-  fi
+if ! (cd $ipxe_blobs && sha256sum --quiet --strict --check sha256sums); then
+  echo "ERROR: vendored iPXE blobs do not match $ipxe_blobs/sha256sums" >&2
+  exit 1
+fi
 
-  if [ "$(sha256sum $tftp_root/$ipxe_file | awk '{print $1}')" != "${ipxe_sha256[$ipxe_file]}" ]; then
-    echo "ERROR: sha256 mismatch for $ipxe_file, expected ${ipxe_sha256[$ipxe_file]}" >&2
-    sudo rm -f $tftp_root/$ipxe_file
-    exit 1
-  fi
-done
+sudo install -m 0644 \
+  $ipxe_blobs/undionly.kpxe $ipxe_blobs/ipxe.efi $ipxe_blobs/ipxe-i386.efi \
+  $tftp_root/
 
 # Boot menus and kickstarts. Deployed unconditionally so edits take effect on
 # rerun.
@@ -63,6 +60,16 @@ EOF
 
 sudo systemctl enable --now nginx.service
 sudo systemctl reload nginx.service
+
+# Nothing here configures which root certificates iPXE trusts. iPXE does have a
+# "trust" setting (option 175 sub-option 90) that looks like the natural place
+# for it, and it is not: crypto/rootcert.c reads that setting in rootcert_init(),
+# a STARTUP_LATE function that latches `initialised = 1` on its first run, which
+# happens before any DHCP lease exists. `show trust` in the iPXE shell will
+# happily print whatever dnsmasq sent -- that reads the settings tree live -- but
+# a DEBUG=rootcert build on a real PXE boot reports "ROOTCERT using 1 built-in
+# certificate(s)", the iPXE CA, regardless. The anchors are therefore baked in by
+# build-ipxe.sh via CERT= and TRUST=.
 
 sudo tee /etc/dnsmasq.d/ipxe.conf > /dev/null << EOF
 enable-tftp
