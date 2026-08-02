@@ -1,0 +1,55 @@
+#!ipxe
+
+dhcp
+
+echo "Platform: ${platform}"
+echo "Vendor: ${cpuvendor} Model: ${cpumodel}"
+echo "hostname: ${hostname}"
+echo "uuid: ${uuid}"
+echo "next-server: ${next-server}"
+echo "cwuri: ${cwuri}"
+echo "cwduri: ${cwduri}"
+echo "dhcp-server: ${dhcp-server}"
+
+:start
+menu Operating systems
+item almalinux      AlmaLinux
+item --gap
+item fedora         Fedora
+item --gap
+item gparted        GParted
+item --gap
+item shell          iPXE shell
+choose os && goto ${os} || goto start
+
+# Distro submenus.
+#
+# No arguments are passed: iPXE settings are global, so a submenu sees anything
+# set here and sets its own defaults itself. Each returns here via `exit` (its
+# "Back" item).
+#
+# The `|| goto failed` is load-bearing: a script terminates on ANY non-zero rc,
+# so an unguarded chain that 404s would kill this script and drop the user at a
+# bare prompt with no menu.
+
+:almalinux
+chain almalinux.ipxe || goto failed
+goto start
+
+:fedora
+chain fedora.ipxe || goto failed
+goto start
+
+:gparted
+kernel http://${next-server}:8000/gparted/1.7.0-1/live/vmlinuz boot=live config components union=overlay username=user noswap noeject vga=788 fetch=http://${next-server}:8000/gparted/1.7.0-1/live/filesystem.squashfs || goto failed
+initrd http://${next-server}:8000/gparted/1.7.0-1/live/initrd.img || goto failed
+boot || goto failed
+
+:shell
+shell
+goto start
+
+:failed
+echo Boot failed, returning to menu...
+prompt --timeout 5000 || goto start
+goto start

@@ -1,0 +1,122 @@
+#!ipxe
+
+# AlmaLinux boot menu.
+#
+# Chainable from autoexec.ipxe (`chain almalinux.ipxe`) or bootable standalone
+# -- it sets everything it needs itself, and returns to a chaining caller via
+# `exit` (the "Back" item).
+#
+# Unlike Fedora, arch is not cpuid-detected: AlmaLinux 10 ships a separate
+# x86_64_v2 build for CPUs older than the x86-64-v3 baseline, and iPXE's cpuid
+# cannot distinguish v2 from v3, so arch is a manual toggle. AlmaLinux 9 only
+# ships plain x86_64, so switching version resets the toggle.
+#
+# Option flags (inst-text, extra-args) are named after the kernel argument
+# they hold (or nothing, when off) and are appended to the kernel command line
+# at boot, so a version and a set of options are picked independently rather
+# than needing one menu label per combination.
+
+set almalinux-mirror-url https://almalinux.uib.no
+
+:start
+set version 10
+set arch x86_64
+set source local
+set inst-text
+set extra-args
+
+:menu
+menu AlmaLinux -- ${hostname} (${arch})
+item --gap Boot
+item boot Boot AlmaLinux ${version} (${source})
+item --gap Version
+item version-10 AlmaLinux 10
+item version-9 AlmaLinux 9
+item version-8 AlmaLinux 8
+item --gap Source
+item source-local    local     -- boot files from ${next-server}, packages upstream
+item source-upstream upstream  -- everything from ${almalinux-mirror-url}/${version}
+item --gap Options
+item toggle-arch     arch: ${arch}  (x86_64_v2 for older CPUs)
+item toggle-text     [${inst-text}] text install (inst.text)
+item edit-extra      extra kernel args: ${extra-args}
+item --gap Other
+item back            Back
+choose --default boot selected && goto ${selected} || goto menu
+
+###
+# Boot
+###
+
+# The local mirror carries boot images only (kernel/initrd/stage2), so
+# packages (inst.repo) always come from the upstream mirror; `source` picks
+# where the boot files and the kickstart come from.
+
+:boot
+set repo ${almalinux-mirror-url}/${version}/BaseOS/${arch}/os
+iseq ${source} local && set boot-base http://${next-server}:8000/almalinux/${version}/${arch}/os || set boot-base ${repo}
+iseq ${source} local && set inst-ks http://${next-server}:8000/almalinux.ks || set inst-ks https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/almalinux.ks
+kernel ${boot-base}/images/pxeboot/vmlinuz ip=dhcp inst.ks=${inst-ks} inst.stage2=${boot-base} inst.repo=${repo} ${inst-text} ${extra-args} || goto failed
+initrd ${boot-base}/images/pxeboot/initrd.img || goto failed
+boot || goto failed
+
+###
+# Versions
+##
+
+:version-10
+set version 10
+set arch x86_64
+goto menu
+
+:version-9
+set version 9
+set arch x86_64
+goto menu
+
+:version-8
+set version 8
+set arch x86_64
+goto menu
+
+###
+# Sources
+##
+
+:source-local
+set source local
+goto menu
+
+:source-upstream
+set source upstream
+goto menu
+
+###
+# Options
+##
+
+:toggle-arch
+iseq ${version} 10 || goto menu
+iseq ${arch} x86_64 && set arch x86_64_v2 || set arch x86_64
+goto menu
+
+:toggle-text
+isset ${inst-text} && set inst-text || set inst-text inst.text
+goto menu
+
+:edit-extra
+echo -n Extra kernel args: && read extra-args || goto menu
+goto menu
+
+
+###
+# Other
+##
+
+:failed
+echo Boot failed, returning to menu...
+prompt --timeout 5000 || goto menu
+goto menu
+
+:back
+exit

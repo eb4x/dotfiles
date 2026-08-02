@@ -1,0 +1,113 @@
+#!ipxe
+
+# Fedora boot menu.
+#
+# Chainable from autoexec.ipxe (`chain fedora.ipxe`) or bootable standalone --
+# it sets everything it needs itself, and returns to a chaining caller via
+# `exit` (the "Back" item).
+#
+# Option flags (inst-keephome, inst-text, extra-args) are named after the
+# kernel argument they hold (or nothing, when off) and are appended to the
+# kernel command line at boot, so a version and a set of options are picked
+# independently rather than needing one menu label per combination.
+
+
+# Fedora 30 is the last i386 release; it lives on the archive server, which
+# shares the <ver>/Everything/<arch>/os path shape with regular mirrors, so on
+# a 32-bit CPU the version and mirror pin to it and everything else just works.
+
+:start
+cpuid --ext 29 && set arch x86_64 || set arch i386
+iseq ${arch} x86_64 && set version 44 || set version 30
+iseq ${arch} x86_64 && set fedora-mirror-url https://mirror.accum.se/mirror/fedora/linux/releases || set fedora-mirror-url https://archives.fedoraproject.org/pub/archive/fedora-secondary/releases
+set source local
+set inst-keephome
+set inst-text
+set extra-args
+
+:menu
+menu Fedora -- ${hostname} (${arch})
+item --gap Boot
+item boot Boot Fedora ${version} (${source})
+item --gap Version
+item version-44 Fedora 44
+item version-43 Fedora 43
+item --gap Source
+item source-local    local     -- boot files from ${next-server}, packages upstream
+item source-upstream upstream  -- everything from ${fedora-mirror-url}/${version}
+item --gap Options
+item toggle-keephome [${inst-keephome}] keep /home  (inst.keephome)
+item toggle-text     [${inst-text}] text install (inst.text)
+item edit-extra      extra kernel args: ${extra-args}
+item --gap Other
+item back            Back
+choose --default boot selected && goto ${selected} || goto menu
+
+###
+# Boot
+###
+
+# The local mirror carries boot images only (kernel/initrd/stage2), so
+# packages (inst.repo) always come from the upstream mirror; `source` picks
+# where the boot files and the kickstart come from.
+
+:boot
+set repo ${fedora-mirror-url}/${version}/Everything/${arch}/os
+iseq ${source} local && set boot-base http://${next-server}:8000/fedora/${version}/${arch}/os || set boot-base ${repo}
+iseq ${source} local && set inst-ks http://${next-server}:8000/fedora.ks || set inst-ks https://raw.githubusercontent.com/eb4x/dotfiles/refs/heads/main/.local/share/kickstart/fedora.ks
+kernel ${boot-base}/images/pxeboot/vmlinuz ip=dhcp inst.ks=${inst-ks} inst.stage2=${boot-base} inst.repo=${repo} ${inst-keephome} ${inst-text} ${extra-args} || goto failed
+initrd ${boot-base}/images/pxeboot/initrd.img || goto failed
+boot || goto failed
+
+###
+# Versions
+##
+
+:version-44
+set version 44
+goto menu
+
+:version-43
+set version 43
+goto menu
+
+###
+# Sources
+##
+
+:source-local
+set source local
+goto menu
+
+:source-upstream
+set source upstream
+goto menu
+
+###
+# Options
+##
+
+:toggle-keephome
+isset ${inst-keephome} && set inst-keephome || set inst-keephome inst.keephome
+goto menu
+
+:toggle-text
+isset ${inst-text} && set inst-text || set inst-text inst.text
+goto menu
+
+:edit-extra
+echo -n Extra kernel args: && read extra-args || goto menu
+goto menu
+
+
+###
+# Other
+##
+
+:failed
+echo Boot failed, returning to menu...
+prompt --timeout 5000 || goto menu
+goto menu
+
+:back
+exit
