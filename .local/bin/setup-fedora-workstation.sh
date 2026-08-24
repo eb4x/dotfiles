@@ -58,6 +58,19 @@ sudo dnf install -y \
 sudo dnf install -y --allowerasing \
   ffmpeg
 
+# RPM packaging for Copr
+sudo dnf install -y \
+  copr-cli \
+  fedora-review \
+  fedpkg
+
+if ! groups $USER | grep -qw mock; then
+  sudo usermod -aG mock $USER
+fi
+
+# overlayfs base dir for mock, see ~/.config/mock.cfg
+sudo install -d -o root -g mock -m 2775 /var/lib/mock/overlayfs
+
 sudo touch /etc/containers/nodocker
 
 mkdir -p $HOME/.docker/cli-plugins

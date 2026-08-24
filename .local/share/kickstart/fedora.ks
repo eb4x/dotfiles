@@ -18,7 +18,7 @@ rootpw --lock
 
 services --enabled=sshd
 
-user --name=erikberg --groups=wheel --password=changeme --gecos="Erik Berg"
+user --name=erikberg --groups=wheel,mock --password=changeme --gecos="Erik Berg"
 sshkey --username=erikberg "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBIBDkDbOgeJHXOM9PZo2Nok5MB5AoRPndSLDIbE22mb743KFJpY4WRvDLoSUc0zTXu5yLv8lQ+8301KaBatCFaHCbEG7z4AWIv4VQEao5bu/qK6xnXwEAUmwGHddZky74A== erikberg_ecdsa"
 
 %pre --interpreter=/usr/bin/bash
@@ -136,6 +136,11 @@ case "$host" in
 -PackageKit-command-not-found
 -firefox
 nemo
+
+# RPM packaging for Copr
+copr-cli
+fedora-review
+fedpkg
 EOF
     ;;
 esac
