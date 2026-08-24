@@ -51,41 +51,15 @@ for pkg in "${packages[@]}"; do
   done
 done
 
-declare -A mock_includes=(
-  [rawhide]="templates/fedora-rawhide.tpl"
-  [44]="fedora-44-x86_64.cfg"
-  [43]="fedora-43-x86_64.cfg"
-)
-
-for ver in "${!mock_includes[@]}"; do
-  include="${mock_includes[$ver]}"
-  if [[ "$ver" == "rawhide" ]]; then
-    name="fedora-rawhide-x86_64-hyprland"
-    baseurl_ver="fedora-rawhide"
-  else
-    name="fedora-${ver}-x86_64-hyprland"
-    baseurl_ver="fedora-${ver}"
+# The mock configs that add the Copr repo are dotfiles, not generated here:
+#   ~/.config/mock/{fedora-rawhide,fedora-44}-x86_64-hyprland.cfg
+# mock checks ~/.config/mock/ before /etc/mock/ for --root NAME; a relative
+# include() inside still resolves against /etc/mock/. Site-wide tunings are
+# in ~/.config/mock.cfg.
+for name in fedora-rawhide-x86_64-hyprland fedora-44-x86_64-hyprland; do
+  if [ ! -f "$HOME/.config/mock/$name.cfg" ]; then
+    echo "warning: ~/.config/mock/$name.cfg missing -- check out the dotfiles repo" >&2
   fi
-
-  sudo install -m 0644 /dev/stdin "/etc/mock/${name}.cfg" <<MOCK
-config_opts['target_arch'] = 'x86_64'
-config_opts['legal_host_arches'] = ('x86_64',)
-
-include('${include}')
-
-config_opts['dnf.conf'] += """
-[copr:copr.fedorainfracloud.org:ebbex:hyprland]
-name=Copr repo for hyprland owned by ebbex
-baseurl=https://download.copr.fedorainfracloud.org/results/ebbex/hyprland/${baseurl_ver}-\$basearch/
-type=rpm-md
-skip_if_unavailable=True
-gpgcheck=1
-gpgkey=https://download.copr.fedorainfracloud.org/results/ebbex/hyprland/pubkey.gpg
-repo_gpgcheck=0
-enabled=1
-enabled_metadata=1
-"""
-MOCK
 done
 
 echo "Done."
@@ -104,4 +78,5 @@ echo "Done."
 #   fedora-review -n <pkg> -m fedora-rawhide-x86_64-hyprland # full guidelines check
 #
 # Submitting to Copr:
+#   sudo dnf install copr-cli
 #   copr-cli build ebbex/hyprland *.src.rpm --chroot fedora-rawhide-x86_64 --nowait
