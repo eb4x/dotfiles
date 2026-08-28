@@ -2,6 +2,7 @@
   "attribution": {
     "sessionUrl": false
   },
+  "autoMemoryEnabled": false,
   "permissions": {
     "defaultMode": "default"
   },
