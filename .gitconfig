@@ -18,7 +18,7 @@
 [rebase]
 	updateRefs = true
 [rerere]
-	enabled = true
+	enabled = false
 # Written by `gh auth setup-git`. The empty helper resets the chain first, so
 # nothing inherited from system config gets a look in. Needs `gh auth login`
 # once per machine; without gh installed git just falls back to prompting.
