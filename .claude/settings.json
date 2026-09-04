@@ -3,6 +3,7 @@
     "sessionUrl": false
   },
   "autoMemoryEnabled": false,
+  "outputStyle": "Concise",
   "permissions": {
     "defaultMode": "default"
   },
