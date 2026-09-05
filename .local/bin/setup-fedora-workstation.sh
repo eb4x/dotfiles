@@ -103,6 +103,14 @@ fs.inotify.max_user_watches = 65536
 fs.inotify.max_user_instances = 8192
 EOF
 
+# zram with zstd instead of the lzo-rle default: ~3-3.5x compression rather than
+# ~2.4x, for roughly the same speed. This file replaces the one shipped in
+# /usr/lib/systemd, so zram-size has to be restated here.
+sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+zram-size = min(ram, 8192)
+compression-algorithm = zstd
+EOF
 
 # OSX-KVM
 sudo tee /etc/modprobe.d/kvm.conf > /dev/null <<EOF
