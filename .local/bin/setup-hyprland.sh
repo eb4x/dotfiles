@@ -40,6 +40,16 @@ for pkg in "${packages[@]}"; do
     git --git-dir="$bare" fetch origin
   fi
 
+  # GitPython >= 3.1.47 (fedpkg's git backend) reads core.bare from the shared
+  # config and then refuses `git status` in linked worktrees ("must be run in
+  # a work tree"). Git's documented fix: keep core.bare in the bare repo's own
+  # per-worktree config instead of the shared one.
+  if [ "$(git --git-dir="$bare" config --get extensions.worktreeConfig || true)" != true ]; then
+    git --git-dir="$bare" config extensions.worktreeConfig true
+    git --git-dir="$bare" config --unset core.bare || true
+    git --git-dir="$bare" config --worktree core.bare true
+  fi
+
   if [ ! -d "$RPMS_DIR/$pkg/rawhide" ]; then
     git --git-dir="$bare" worktree add "$RPMS_DIR/$pkg/rawhide" rawhide
   fi
