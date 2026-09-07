@@ -51,7 +51,6 @@ sudo dnf install -y \
   sshfs \
   nemo \
   tmux \
-  v4l-utils v4l2loopback \
   virt-manager virt-install
 
 # Get the real stuff (in case ffmpeg-free is installed)
@@ -201,6 +200,8 @@ if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; 
   flatpak install -y --user flathub io.github.TransmissionRemoteGtk
   flatpak install -y --user flathub org.mozilla.firefox
   flatpak install -y --user flathub org.videolan.VLC
+
+  sudo dnf install -y v4l-utils v4l2loopback
 fi
 
 flatpak install -y --user flathub com.jetbrains.CLion
