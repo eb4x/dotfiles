@@ -11,6 +11,7 @@
 [user]
 	name = Erik Berg
 	signingKey = 1182D19B0E5ED030
+	useConfigOnly = true
 [commit]
 	gpgSign = true
 [alias]
