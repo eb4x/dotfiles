@@ -1,0 +1,27 @@
+---
+clouds:
+  nrec-bgo:
+    auth:
+      auth_url: https://api.nrec.no:5000/v3
+      project_domain_name: dataporten
+      project_name: PRIVATE-erikberg.uio.no
+      user_domain_name: dataporten
+      username: erikberg@uio.no
+    region_name: bgo
+    identity_api_version: 3
+  nrec-osl:
+    auth:
+      auth_url: https://api.nrec.no:5000/v3
+      project_domain_name: dataporten
+      project_name: PRIVATE-erikberg.uio.no
+      user_domain_name: dataporten
+      username: erikberg@uio.no
+    region_name: osl
+    identity_api_version: 3
+
+# add a corresponding entry in secure.yaml
+#---
+#clouds:
+#  nrec-bgo:
+#    auth:
+#      password: ...
