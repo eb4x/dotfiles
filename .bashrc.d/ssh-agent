@@ -1,0 +1,7 @@
+# Systemd socket unit: agent dies with the user manager, not orphaned per login.
+if [ -z "$SSH_AUTH_SOCK" ] && [ -n "$XDG_RUNTIME_DIR" ]; then
+	if [ -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ] ||
+	   systemctl --user enable --now --quiet ssh-agent.socket 2>/dev/null; then
+		export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+	fi
+fi
