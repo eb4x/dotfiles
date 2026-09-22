@@ -1,1 +1,16 @@
-export GOPATH=$HOME/.local/go
+export GOPATH=$HOME/.local/share/go
+export GOMODCACHE=$HOME/.cache/go/mod
+case ":${PATH}:" in
+  *":${GOPATH}/bin:"*) ;;
+  *) PATH="${GOPATH}/bin:${PATH}" ;;
+esac
+
+# old toolchain: GOTOOLCHAIN=go1.23.12 go build
+_gotoolchain=$GOPATH/toolchains/current
+if [ -x "${_gotoolchain}/bin/go" ]; then
+  case ":${PATH}:" in
+    *":${_gotoolchain}/bin:"*) ;;
+    *) PATH="${_gotoolchain}/bin:${PATH}" ;;
+  esac
+fi
+unset _gotoolchain
