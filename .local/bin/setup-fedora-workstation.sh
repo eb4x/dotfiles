@@ -42,14 +42,14 @@ fi
 sudo dnf upgrade -y
 sudo dnf install -y \
   bsdtar \
+  btop htop iftop iotop \
   flatpak \
-  htop iftop iotop \
   mpv \
+  nemo \
   neovim \
   podman podman-docker skopeo \
   python3-devel python3-pip \
   sshfs \
-  nemo \
   tmux \
   virt-manager virt-install
 
@@ -206,8 +206,8 @@ fi
 
 flatpak install -y --user flathub com.jetbrains.CLion
 flatpak install -y --user flathub com.jetbrains.GoLand
-flatpak install -y --user flathub com.jetbrains.RubyMine
 flatpak install -y --user flathub com.jetbrains.PyCharm-Professional
+flatpak install -y --user flathub com.jetbrains.RubyMine
 flatpak override --user --filesystem=/run/user/${UID}/podman/podman.sock com.jetbrains.PyCharm-Professional
 
 # As long as we're administering EL8, there's no point in running newer ansible-core
