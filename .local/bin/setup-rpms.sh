@@ -112,6 +112,14 @@ musl=(
   musl-llvm
 )
 
+# ebbex/qemu: virtualization stack extras. No Copr deps: plain
+# fedora-<rel>-x86_64 mock roots. edk2 keeps OVMF IA32 alive (revert of the
+# upstream removal + CpuDxe fix, `ia32` branch of github.com/eb4x/edk2); it
+# also carries an f43 branch beyond release_branches.
+qemu=(
+  edk2:fedora
+)
+
 # --- Repo setup ------------------------------------------------------------
 
 setup_repo() {
@@ -216,7 +224,7 @@ has_ref() {
 }
 
 mkdir -p "$RPMS_DIR"
-for entry in "${ffmpeg[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}"; do
+for entry in "${ffmpeg[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
   setup_repo "$entry"
 done
 
@@ -247,6 +255,7 @@ echo "Done."
 #   sudo dnf copr enable ebbex/hyprland && sudo dnf install hyprland
 #   sudo dnf copr enable ebbex/mingw    && sudo dnf install ucrtarm64-probe   # whole stack
 #   sudo dnf copr enable ebbex/musl     && sudo dnf install musl-libcxx musl-llvm
+#   sudo dnf copr enable ebbex/qemu     && sudo dnf install edk2-ovmf-ia32
 #
 # Cross-compiling for Windows ARM64:
 #   aarch64-w64-mingw32-clang   hello.c   -o hello.exe
