@@ -47,7 +47,6 @@ sudo dnf install -y \
   jq \
   mpv \
   nemo \
-  podman podman-docker skopeo \
   sshfs \
   tmux \
   virt-manager virt-install
@@ -75,24 +74,30 @@ if [ ! -x "$HOME/.local/bin/claude" ]; then
   curl -fsSL https://claude.ai/install.sh | bash
 fi
 
+# --- Containers --------------------------------------------------------------
+
+sudo dnf install -y \
+  podman podman-docker skopeo
+
 sudo touch /etc/containers/nodocker
 
-mkdir -p $HOME/.docker/cli-plugins
-if [ ! -x $HOME/.docker/cli-plugins/docker-compose ]; then
+mkdir -p "$HOME/.docker/cli-plugins"
+if [ ! -x "$HOME/.docker/cli-plugins/docker-compose" ]; then
   compose_version=$(curl -sL https://api.github.com/repos/docker/compose/releases/latest | jq -r '.tag_name')
-  curl -sL https://github.com/docker/compose/releases/download/${compose_version}/docker-compose-linux-x86_64 -o $HOME/.docker/cli-plugins/docker-compose
-  chmod +x $HOME/.docker/cli-plugins/docker-compose
+  curl -fL --progress-bar "https://github.com/docker/compose/releases/download/${compose_version}/docker-compose-linux-x86_64" -o "$HOME/.docker/cli-plugins/docker-compose"
+  chmod +x "$HOME/.docker/cli-plugins/docker-compose"
 
   # Disable podman-compose warnings
-  mkdir -p $HOME/.config/containers/containers.conf.d
-  tee $HOME/.config/containers/containers.conf.d/docker-compose.conf > /dev/null <<EOF
+  mkdir -p "$HOME/.config/containers/containers.conf.d"
+  tee "$HOME/.config/containers/containers.conf.d/docker-compose.conf" > /dev/null <<EOF
 [engine]
 compose_warning_logs = false
 EOF
 fi
-if [ ! -x $HOME/.local/bin/helm ]; then
+
+if [ ! -x "$HOME/.local/bin/helm" ]; then
   helm_version=$(curl -sL https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
-  curl -sL https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz | tar -C $HOME/.local/bin --strip-components=1 -zx linux-amd64/helm
+  curl -fL --progress-bar "https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz" | tar -C "$HOME/.local/bin" --strip-components=1 -zx linux-amd64/helm
 fi
 
 for sub_file in /etc/subuid /etc/subgid; do
