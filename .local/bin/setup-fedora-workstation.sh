@@ -44,11 +44,10 @@ sudo dnf install -y \
   bsdtar \
   btop htop iftop iotop \
   flatpak \
+  jq \
   mpv \
   nemo \
-  neovim \
   podman podman-docker skopeo \
-  python3-devel python3-pip \
   sshfs \
   tmux \
   virt-manager virt-install
@@ -57,18 +56,24 @@ sudo dnf install -y \
 sudo dnf install -y --allowerasing \
   ffmpeg
 
-# RPM packaging for Copr
+# --- Development -------------------------------------------------------------
+
 sudo dnf install -y \
-  copr-cli \
-  fedora-review \
-  fedpkg
+  gh \
+  neovim \
+  python3-devel python3-pip \
+  ShellCheck
 
-if ! groups $USER | grep -qw mock; then
-  sudo usermod -aG mock $USER
+pip install --upgrade --user pip
+
+# As long as we're administering EL8, there's no point in running newer ansible-core
+pip install --user 'ansible-core<2.17'
+
+# Installs to ~/.local/share/claude/versions/ behind a ~/.local/bin/claude shim
+# and self-updates from there, so this only ever runs on a fresh machine.
+if [ ! -x "$HOME/.local/bin/claude" ]; then
+  curl -fsSL https://claude.ai/install.sh | bash
 fi
-
-# overlayfs base dir for mock, see ~/.config/mock.cfg
-sudo install -d -o root -g mock -m 2775 /var/lib/mock/overlayfs
 
 sudo touch /etc/containers/nodocker
 
@@ -210,9 +215,7 @@ flatpak install -y --user flathub com.jetbrains.PyCharm-Professional
 flatpak install -y --user flathub com.jetbrains.RubyMine
 flatpak override --user --filesystem=/run/user/${UID}/podman/podman.sock com.jetbrains.PyCharm-Professional
 
-# As long as we're administering EL8, there's no point in running newer ansible-core
-pip install --upgrade --user pip
-pip install --user 'ansible-core<2.17' sshuttle
+pip install --user sshuttle
 
 sshuttle --sudoers-no-modify | \
   grep -v -E '^\s*$|^#' | \

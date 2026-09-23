@@ -136,11 +136,6 @@ case "$host" in
 -PackageKit-command-not-found
 -firefox
 nemo
-
-# RPM packaging for Copr
-copr-cli
-fedora-review
-fedpkg
 EOF
     ;;
 esac
