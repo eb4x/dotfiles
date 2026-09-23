@@ -109,15 +109,6 @@ fs.inotify.max_user_watches = 65536
 fs.inotify.max_user_instances = 8192
 EOF
 
-# zram with zstd instead of the lzo-rle default: ~3-3.5x compression rather than
-# ~2.4x, for roughly the same speed. This file replaces the one shipped in
-# /usr/lib/systemd, so zram-size has to be restated here.
-sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
-[zram0]
-zram-size = min(ram, 8192)
-compression-algorithm = zstd
-EOF
-
 # --- Virtualization ----------------------------------------------------------
 
 sudo dnf install -y \
@@ -181,10 +172,21 @@ if [[ $host == "lizzie" ]]; then
     v4l-utils v4l2loopback
 fi
 
+# --- Hardware & tuning -------------------------------------------------------
+
 # ZSA Voyager
 sudo tee /etc/udev/rules.d/50-zsa.rules > /dev/null <<EOF
 SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0660", GROUP="wheel", TAG+="uaccess"
 SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
+EOF
+
+# zram with zstd instead of the lzo-rle default: ~3-3.5x compression rather than
+# ~2.4x, for roughly the same speed. This file replaces the one shipped in
+# /usr/lib/systemd, so zram-size has to be restated here.
+sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+zram-size = min(ram, 8192)
+compression-algorithm = zstd
 EOF
 
 sudo tee /etc/NetworkManager/conf.d/dnsmasq.conf > /dev/null <<EOF
