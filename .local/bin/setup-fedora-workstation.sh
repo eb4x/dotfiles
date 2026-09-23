@@ -48,8 +48,7 @@ sudo dnf install -y \
   mpv \
   nemo \
   sshfs \
-  tmux \
-  virt-manager virt-install
+  tmux
 
 # Get the real stuff (in case ffmpeg-free is installed)
 sudo dnf install -y --allowerasing \
@@ -121,6 +120,11 @@ zram-size = min(ram, 8192)
 compression-algorithm = zstd
 EOF
 
+# --- Virtualization ----------------------------------------------------------
+
+sudo dnf install -y \
+  virt-manager virt-install
+
 # OSX-KVM
 sudo tee /etc/modprobe.d/kvm.conf > /dev/null <<EOF
 options kvm_intel nested=1
@@ -128,19 +132,19 @@ options kvm_intel emulate_invalid_guest_state=0
 options kvm ignore_msrs=1 report_ignored_msrs=0
 EOF
 
-if ! groups $USER | grep -q libvirt; then
-  sudo usermod -aG libvirt $USER
+if ! id -nG "$USER" | grep -wq libvirt; then
+  sudo usermod -aG libvirt "$USER"
 fi
 
-mkdir -p $HOME/.local/share/libvirt/images
+mkdir -p "$HOME/.local/share/libvirt/images"
 if ! virsh pool-info "$USER" &> /dev/null; then
-  virsh pool-define-as "$USER" dir --target $HOME/.local/share/libvirt/images
+  virsh pool-define-as "$USER" dir --target "$HOME/.local/share/libvirt/images"
   virsh pool-start "$USER"
   virsh pool-autostart "$USER"
 fi
 
-if [ ! -f $HOME/.local/share/libvirt/images/virtio-win.iso ]; then
-  curl -sL "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso" \
+if [ ! -f "$HOME/.local/share/libvirt/images/virtio-win.iso" ]; then
+  curl -fL --progress-bar "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso" \
     -o "$HOME/.local/share/libvirt/images/virtio-win.iso"
 fi
 
@@ -150,7 +154,8 @@ if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
     packer \
     vagrant
 
-  if [ ! -d $HOME/.vagrant.d/gems/*/gems/vagrant-libvirt-* ]; then
+  # compgen -G expands the glob and exits non-zero when nothing matches
+  if ! compgen -G "$HOME/.vagrant.d/gems/*/gems/vagrant-libvirt-*" > /dev/null; then
     vagrant plugin install vagrant-libvirt
   fi
 fi
