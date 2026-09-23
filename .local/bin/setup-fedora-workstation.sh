@@ -5,8 +5,10 @@ set -euo pipefail
 # This is not idempotent, and ideally runs just once after installation.
 #
 
-echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
-sudo chmod 0440 /etc/sudoers.d/$USER
+# --- Bootstrap ---------------------------------------------------------------
+
+echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/$USER" > /dev/null
+sudo chmod 0440 "/etc/sudoers.d/$USER"
 
 source /etc/os-release
 
@@ -235,6 +237,8 @@ sshuttle --sudoers-no-modify | \
   sed -E 's/SSHUTTLE\w+/SSHUTTLE/g' | \
   sudo tee /etc/sudoers.d/sshuttle.conf > /dev/null
 
+# --- Desktop / GNOME ---------------------------------------------------------
+
 flatpak install -y --user flathub com.github.tchx84.Flatseal
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
@@ -325,14 +329,15 @@ if (( VERSION_ID >= 41 )); then
   dconf write "/org/gnome/Ptyxis/Profiles/$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d \')/palette" "'Catppuccin Mocha'"
 fi
 
-if [ ! -f $HOME/.local/share/fonts/JetBrainsMonoNerdFont-Regular.ttf ]; then
+if [ ! -f "$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Regular.ttf" ]; then
   echo "Installing nerd fonts"
-  mkdir -p $HOME/.local/share/fonts
-  curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.tar.xz | tar -xJC $HOME/.local/share/fonts
+  mkdir -p "$HOME/.local/share/fonts"
+  curl -fL --progress-bar https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.tar.xz | tar -xJC "$HOME/.local/share/fonts"
 fi
 
+# --- Finish ------------------------------------------------------------------
 
 sudo systemctl enable --now sshd.service
-sudo rm /etc/sudoers.d/$USER
+sudo rm "/etc/sudoers.d/$USER"
 
 dnf needs-restarting || systemctl reboot
