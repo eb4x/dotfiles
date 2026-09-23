@@ -10,6 +10,8 @@ sudo chmod 0440 /etc/sudoers.d/$USER
 
 source /etc/os-release
 
+host=$(hostname --short)
+
 shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
@@ -35,7 +37,7 @@ if [ ! -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
   sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
 fi
 
-if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
+if [[ $host != "heiress" && $host != "waitress" ]]; then
   sudo dnf remove -y firefox firefox-langpacks
 fi
 
@@ -202,11 +204,11 @@ flatpak install -y --user flathub org.gimp.GIMP
 flatpak install -y --user flathub org.gnome.Evolution
 flatpak install -y --user flathub us.zoom.Zoom
 
-if [[ $(hostname --short) == "bonnie" || $(hostname --short) == "hedril" ]]; then
+if [[ $host == "bonnie" || $host == "hedril" ]]; then
   flatpak install -y --user flathub app.eduroam.geteduroam
 fi
 
-if [[ $(hostname --short) != "heiress" && $(hostname --short) != "waitress" ]]; then
+if [[ $host != "heiress" && $host != "waitress" ]]; then
   flatpak install -y --user flathub com.discordapp.Discord
   flatpak install -y --user flathub com.google.Chrome
   flatpak install -y --user flathub com.obsproject.Studio
@@ -268,7 +270,7 @@ gsettings set org.virt-manager.virt-manager.vmlist-fields memory-usage true
 gsettings set org.virt-manager.virt-manager.confirm forcepoweroff false
 
 # Disable suspend on AC
-if [[ $(hostname) != "heiress" && $(hostname) != "waitress" ]]; then
+if [[ $host != "heiress" && $host != "waitress" ]]; then
   # User session
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
@@ -302,7 +304,7 @@ if nmcli connection show skynet &> /dev/null; then
   # Use predictable mac-addresses for predictable IPs.
   sudo nmcli connection modify skynet 802-11-wireless.mac-address-randomization never
 
-  if [[ $(hostname) == "lizzie" ]]; then
+  if [[ $host == "lizzie" ]]; then
     sudo nmcli connection modify eno1 ipv4.ignore-auto-routes yes
     sudo nmcli connection modify skynet ipv4.ignore-auto-routes yes
     sudo nmcli connection modify skynet +ipv4.routes "0.0.0.0/0 192.168.140.1"
