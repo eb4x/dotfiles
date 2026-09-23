@@ -189,6 +189,8 @@ zram-size = min(ram, 8192)
 compression-algorithm = zstd
 EOF
 
+# --- Networking --------------------------------------------------------------
+
 sudo tee /etc/NetworkManager/conf.d/dnsmasq.conf > /dev/null <<EOF
 [main]
 dns=dnsmasq
@@ -204,6 +206,34 @@ sudo tee /etc/systemd/resolved.conf.d/override.conf > /dev/null <<EOF
 [Resolve]
 DNSStubListener=no
 EOF
+
+# Add additional routes for home-networking. `nmcli connection modify` only
+# rewrites the stored profile, so nothing here disturbs the running connection.
+if nmcli connection show skynet &> /dev/null; then
+  # Use predictable mac-addresses for predictable IPs.
+  sudo nmcli connection modify skynet 802-11-wireless.mac-address-randomization never
+
+  if [[ $host == "lizzie" ]]; then
+    sudo nmcli connection modify eno1 ipv4.ignore-auto-routes yes
+    sudo nmcli connection modify skynet ipv4.ignore-auto-routes yes
+    sudo nmcli connection modify skynet +ipv4.routes "0.0.0.0/0 192.168.140.1"
+  fi
+
+  if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
+    sudo nmcli connection modify skynet +ipv4.routes "192.168.3.0/24 192.168.140.254"
+  fi
+
+  if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.4.0/24")'; then
+    sudo nmcli connection modify skynet +ipv4.routes "192.168.4.0/24 192.168.140.254"
+  fi
+fi
+
+pip install --user sshuttle
+
+sshuttle --sudoers-no-modify | \
+  grep -v -E '^\s*$|^#' | \
+  sed -E 's/SSHUTTLE\w+/SSHUTTLE/g' | \
+  sudo tee /etc/sudoers.d/sshuttle.conf > /dev/null
 
 flatpak install -y --user flathub com.github.tchx84.Flatseal
 flatpak install -y --user flathub com.mattermost.Desktop
@@ -235,13 +265,6 @@ flatpak install -y --user flathub com.jetbrains.GoLand
 flatpak install -y --user flathub com.jetbrains.PyCharm-Professional
 flatpak install -y --user flathub com.jetbrains.RubyMine
 flatpak override --user --filesystem=/run/user/${UID}/podman/podman.sock com.jetbrains.PyCharm-Professional
-
-pip install --user sshuttle
-
-sshuttle --sudoers-no-modify | \
-  grep -v -E '^\s*$|^#' | \
-  sed -E 's/SSHUTTLE\w+/SSHUTTLE/g' | \
-  sudo tee /etc/sudoers.d/sshuttle.conf > /dev/null
 
 # Find all these gsettings by using
 # `dconf watch /`
@@ -308,25 +331,6 @@ if [ ! -f $HOME/.local/share/fonts/JetBrainsMonoNerdFont-Regular.ttf ]; then
   curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.tar.xz | tar -xJC $HOME/.local/share/fonts
 fi
 
-# Add additional routes for home-networking
-if nmcli connection show skynet &> /dev/null; then
-  # Use predictable mac-addresses for predictable IPs.
-  sudo nmcli connection modify skynet 802-11-wireless.mac-address-randomization never
-
-  if [[ $host == "lizzie" ]]; then
-    sudo nmcli connection modify eno1 ipv4.ignore-auto-routes yes
-    sudo nmcli connection modify skynet ipv4.ignore-auto-routes yes
-    sudo nmcli connection modify skynet +ipv4.routes "0.0.0.0/0 192.168.140.1"
-  fi
-
-  if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.3.0/24")'; then
-    sudo nmcli connection modify skynet +ipv4.routes "192.168.3.0/24 192.168.140.254"
-  fi
-
-  if ! ip --json route show | jq -e 'any(.[]; .dst == "192.168.4.0/24")'; then
-    sudo nmcli connection modify skynet +ipv4.routes "192.168.4.0/24 192.168.140.254"
-  fi
-fi
 
 sudo systemctl enable --now sshd.service
 sudo rm /etc/sudoers.d/$USER
