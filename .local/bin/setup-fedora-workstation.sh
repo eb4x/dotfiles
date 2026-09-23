@@ -16,26 +16,28 @@ shopt -s nullglob; for repofile in /etc/yum.repos.d/_copr*; do
   sudo rm "${repofile}"
 done; shopt -u nullglob
 
-# Needed for `dnf config-manager and versionlock`
+# Needed for `dnf config-manager`, `dnf needs-restarting`, and to add the flathub remote.
 sudo dnf install -y \
-  dnf-utils \
-  dnf-plugin-versionlock
+  dnf5-plugins \
+  flatpak
+
+# --- Repositories ------------------------------------------------------------
 
 if [[ ! -f /etc/yum.repos.d/hashicorp.repo && "${RELEASE_TYPE:-stable}" != "development" ]]; then
-  if (( VERSION_ID >= 41 )); then
-    sudo dnf config-manager addrepo --from-repofile https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-  else
-    sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-  fi
+  sudo dnf config-manager addrepo --from-repofile https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 fi
 
 # Install rpmfusion
 if [ ! -f /etc/yum.repos.d/rpmfusion-free.repo ]; then
-  sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${VERSION_ID}.noarch.rpm
+  sudo dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${VERSION_ID}.noarch.rpm"
 fi
 if [ ! -f /etc/yum.repos.d/rpmfusion-nonfree.repo ]; then
-  sudo dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm
+  sudo dnf install -y "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${VERSION_ID}.noarch.rpm"
 fi
+
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# --- Base packages -----------------------------------------------------------
 
 if [[ $host != "heiress" && $host != "waitress" ]]; then
   sudo dnf remove -y firefox firefox-langpacks
@@ -45,7 +47,6 @@ sudo dnf upgrade -y
 sudo dnf install -y \
   bsdtar \
   btop htop iftop iotop \
-  flatpak \
   jq \
   nemo \
   sshfs \
@@ -202,8 +203,6 @@ sudo tee /etc/systemd/resolved.conf.d/override.conf > /dev/null <<EOF
 DNSStubListener=no
 EOF
 
-flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
 flatpak install -y --user flathub com.github.tchx84.Flatseal
 flatpak install -y --user flathub com.mattermost.Desktop
 flatpak install -y --user flathub com.slack.Slack
@@ -330,4 +329,4 @@ fi
 sudo systemctl enable --now sshd.service
 sudo rm /etc/sudoers.d/$USER
 
-needs-restarting -r || systemctl reboot
+dnf needs-restarting || systemctl reboot
