@@ -47,14 +47,9 @@ sudo dnf install -y \
   btop htop iftop iotop \
   flatpak \
   jq \
-  mpv \
   nemo \
   sshfs \
   tmux
-
-# Get the real stuff (in case ffmpeg-free is installed)
-sudo dnf install -y --allowerasing \
-  ffmpeg
 
 # --- Development -------------------------------------------------------------
 
@@ -162,12 +157,27 @@ if [ -f /etc/yum.repos.d/hashicorp.repo ]; then
   fi
 fi
 
+# --- Multimedia --------------------------------------------------------------
+
+sudo dnf install -y \
+  mpv
+
+# Get the real stuff (in case ffmpeg-free is installed)
+sudo dnf install -y --allowerasing \
+  ffmpeg
+
 # Check for Intel VGA, and prep for vaapi
 if lsmod | grep -q i915; then
   sudo dnf install -y \
     igt-gpu-tools \
     intel-media-driver \
     libva-utils
+fi
+
+# Virtual camera for OBS
+if [[ $host == "lizzie" ]]; then
+  sudo dnf install -y \
+    v4l-utils v4l2loopback
 fi
 
 # ZSA Voyager
@@ -217,8 +227,6 @@ if [[ $host != "heiress" && $host != "waitress" ]]; then
   flatpak install -y --user flathub io.github.TransmissionRemoteGtk
   flatpak install -y --user flathub org.mozilla.firefox
   flatpak install -y --user flathub org.videolan.VLC
-
-  sudo dnf install -y v4l-utils v4l2loopback
 fi
 
 flatpak install -y --user flathub com.jetbrains.CLion
