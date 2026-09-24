@@ -134,6 +134,10 @@ if ! virsh pool-info "$USER" &> /dev/null; then
   virsh pool-autostart "$USER"
 fi
 
+# Guests run as `qemu`, which can't reach a pool under a 0700 home. Traverse
+# only, so qemu can open the images but not list $HOME.
+sudo setfacl -m u:qemu:x "$HOME" "$HOME/.local" "$HOME/.local/share"
+
 if [ ! -f "$HOME/.local/share/libvirt/images/virtio-win.iso" ]; then
   curl -fL --progress-bar "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso" \
     -o "$HOME/.local/share/libvirt/images/virtio-win.iso"

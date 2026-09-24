@@ -1,0 +1,9 @@
+# Personal Vagrant defaults, merged into every project Vagrantfile.
+
+Vagrant.configure("2") do |config|
+  config.vm.provider :libvirt do |lv|
+    # Keep VM images out of /var/lib/libvirt/images
+    lv.storage_pool_name  = "erikberg"
+    lv.snapshot_pool_name = "erikberg"
+  end
+end
