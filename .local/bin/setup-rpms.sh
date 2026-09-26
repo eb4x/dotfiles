@@ -135,7 +135,7 @@ setup_repo() {
     git clone --bare "$GITHUB_BASE/$pkg.git" "$bare"
   else
     echo "Fetching $pkg..."
-    git --git-dir="$bare" fetch origin
+    git --git-dir="$bare" fetch --prune origin
   fi
 
   git --git-dir="$bare" config user.email "fedora@slipsprogrammor.no"
