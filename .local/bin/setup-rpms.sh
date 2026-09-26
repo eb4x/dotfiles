@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Sets up ~/src/rpms (see CLAUDE.md there): host tooling, one bare repo per
-# package with a worktree per branch, mock roots. Idempotent.
+# package with a worktree per branch, the source trees we patch in ~/src,
+# mock roots. Idempotent.
 #
 # Package entries: `name`, `name:fedora` or `name:rpmfusion`; the suffix adds
 # that dist-git as a read-only `upstream` remote. Our branches sit on top of
@@ -119,6 +120,13 @@ ffmpeg=(
   ffmpeg:rpmfusion
 )
 
+# ebbex/fwupd: Fedora's fwupd plus our patch series (intel-gsc Arc DG2 / A770,
+# genesys), developed in ~/src/fwupd. No Copr deps: plain fedora-<rel>-x86_64
+# mock roots.
+fwupd=(
+  fwupd:fedora
+)
+
 # ebbex/gnome. No Copr deps: plain fedora-<rel>-x86_64 mock roots.
 gnome=(
   loupe:fedora
@@ -224,8 +232,34 @@ setup_package() {
 }
 
 mkdir -p "$RPMS_DIR"
-for entry in "${ffmpeg[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
+for entry in "${ffmpeg[@]}" "${fwupd[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
   setup_package "$entry"
+done
+
+# --- Source trees ----------------------------------------------------------
+# Upstream projects we patch, ~/src/<name>: a bare repo in .git with
+# worktrees beside it, like the package repos. Entries: `name branch email
+# upstream-url [origin-url]`, origin being our fork, if any. Only <branch> is
+# set up and kept current (fast-forward only); topic-branch worktrees are left
+# alone.
+src_trees=(
+  "fwupd main fwupd@slipsprogrammor.no https://github.com/fwupd/fwupd.git https://github.com/eb4x/fwupd.git"
+)
+
+setup_src_tree() {
+  local name=$1 branch=$2 email=$3 upstream=$4 origin=${5:-}
+  local bare="$HOME/src/$name/.git" dir="$HOME/src/$name/$branch"
+  setup_bare_repo "$bare" "$email" "$upstream" "$origin"
+  add_worktree "$bare" "$dir" "$branch" "$branch"
+  git --git-dir="$bare" branch -q --set-upstream-to="upstream/$branch" "$branch"
+  # Refuses on local commits or changes it would overwrite.
+  git -C "$dir" merge -q --ff-only "upstream/$branch" ||
+    echo "warning: $name/$branch can't be fast-forwarded to upstream/$branch" >&2
+}
+
+for entry in "${src_trees[@]}"; do
+  # shellcheck disable=SC2086 # word-split on purpose
+  setup_src_tree $entry
 done
 
 # Upstream Hyprland checkout, for reading the build system when bumping specs.
@@ -251,6 +285,7 @@ echo "Done."
 
 # Using the Coprs:
 #   sudo dnf copr enable ebbex/ffmpeg   && sudo dnf install --allowerasing ffmpeg
+#   sudo dnf copr enable ebbex/fwupd    && sudo dnf upgrade fwupd
 #   sudo dnf copr enable ebbex/gnome    && sudo dnf install loupe glide-rs
 #   sudo dnf copr enable ebbex/hyprland && sudo dnf install hyprland
 #   sudo dnf copr enable ebbex/mingw    && sudo dnf install ucrtarm64-probe   # whole stack
