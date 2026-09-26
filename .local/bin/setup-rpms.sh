@@ -303,17 +303,22 @@ setup_kernel_tree() {
   # Upstream base. A git snapshot (7.3-rc3-313-g5dd1818b15d9) is fetched by
   # full sha from the torvalds tree; GitHub's API expands the abbreviation.
   # Anything else is a tag; the stable tree also carries the mainline tags.
+  # A commit already here (e.g. via the xe branches) is only tagged: fetching
+  # it with --depth 1 would mark it shallow and cut off the history behind it.
   if ! has_ref "$LINUX_BARE" "refs/tags/$base"; then
+    local url sha
     if [[ $linux_release =~ -g([0-9a-f]+)$ ]]; then
-      local sha
+      url=https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
       sha=$(curl -fsS "https://api.github.com/repos/torvalds/linux/commits/${BASH_REMATCH[1]}" | jq -er .sha)
-      echo "Fetching linux $base ($sha)..."
-      git --git-dir="$LINUX_BARE" fetch -q --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "$sha"
-      git --git-dir="$LINUX_BARE" tag "$base" "$sha"
     else
-      echo "Fetching linux $base..."
-      git --git-dir="$LINUX_BARE" fetch -q --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git tag "$base"
+      url=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+      sha=$(git ls-remote --exit-code "$url" "refs/tags/$base^{}" | cut -f1)
     fi
+    if ! git --git-dir="$LINUX_BARE" cat-file -e "$sha^{commit}" 2>/dev/null; then
+      echo "Fetching linux $base ($sha)..."
+      git --git-dir="$LINUX_BARE" fetch -q --depth 1 "$url" "$sha"
+    fi
+    git --git-dir="$LINUX_BARE" tag "$base" "$sha"
   fi
 
   # Fedora commit: the redhat patch applied to the base in a scratch index,
@@ -340,8 +345,35 @@ setup_kernel_tree() {
       "$(git --git-dir="$LINUX_BARE" describe --tags --abbrev=0 --match 'kernel-*' "$fedora_release") $fedora_release" >&2
 }
 
+# Development trees added as remotes of ~/src/linux/.git: name, URL, branches.
+# No tags. Every fetch is cut off at --shallow-since: a plain fetch into the
+# shallow repo is not bounded by what is already here, and the first
+# backmerge of an older branch would pull in all of mainline history. xe:
+# Intel Xe driver (Arc A770 / DG2 work).
+LINUX_REMOTES=(
+  "xe https://gitlab.freedesktop.org/drm/xe/kernel.git drm-xe-next drm-xe-fixes drm-xe-next-fixes"
+)
+LINUX_SHALLOW_SINCE="6 months ago"
+
+setup_linux_remote() {
+  local name=$1 url=$2; shift 2
+  set_remote "$LINUX_BARE" "$name" "$url"
+  git --git-dir="$LINUX_BARE" remote set-branches "$name" "$@"
+  git --git-dir="$LINUX_BARE" config "remote.$name.tagOpt" --no-tags
+  echo "Fetching linux remote $name..."
+  # Fails with "no commits selected for shallow requests" when every updated
+  # branch tip is older than the cutoff.
+  if ! git --git-dir="$LINUX_BARE" fetch -q --shallow-since="$LINUX_SHALLOW_SINCE" "$name"; then
+    echo "warning: fetching linux remote $name failed -- a branch older than $LINUX_SHALLOW_SINCE?" >&2
+  fi
+}
+
 [ -d "$LINUX_BARE" ] || git init -q --bare "$LINUX_BARE"
 git --git-dir="$LINUX_BARE" config user.email "fedora@slipsprogrammor.no"
+for remote in "${LINUX_REMOTES[@]}"; do
+  # shellcheck disable=SC2086 # word-split on purpose
+  setup_linux_remote $remote
+done
 for fedora_release in rawhide "${release_branches[@]}"; do
   setup_kernel_tree "$fedora_release"
 done
