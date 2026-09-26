@@ -150,6 +150,13 @@ hyprland=(
   hyprland:fedora
 )
 
+# ebbex/kernel: Fedora's kernel, plus igt-gpu-tools (gputop) for the Arc
+# A770 / xe work. No Copr deps: plain fedora-<rel>-x86_64 mock roots.
+kernel=(
+  kernel:fedora
+  igt-gpu-tools:fedora
+)
+
 # ebbex/mingw: the ucrtarm64 (aarch64-w64-mingw32) clang/lld cross toolchain.
 # Mock roots: fedora-<rel>-x86_64-mingw. Each level must be published in the
 # Copr before the next builds:
@@ -232,7 +239,7 @@ setup_package() {
 }
 
 mkdir -p "$RPMS_DIR"
-for entry in "${ffmpeg[@]}" "${fwupd[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
+for entry in "${ffmpeg[@]}" "${fwupd[@]}" "${gnome[@]}" "${hyprland[@]}" "${kernel[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
   setup_package "$entry"
 done
 
@@ -244,6 +251,7 @@ done
 # alone.
 src_trees=(
   "fwupd main fwupd@slipsprogrammor.no https://github.com/fwupd/fwupd.git https://github.com/eb4x/fwupd.git"
+  "igt-gpu-tools master gitlab@slipsprogrammor.no https://gitlab.freedesktop.org/drm/igt-gpu-tools.git"
 )
 
 setup_src_tree() {
@@ -288,6 +296,7 @@ echo "Done."
 #   sudo dnf copr enable ebbex/fwupd    && sudo dnf upgrade fwupd
 #   sudo dnf copr enable ebbex/gnome    && sudo dnf install loupe glide-rs
 #   sudo dnf copr enable ebbex/hyprland && sudo dnf install hyprland
+#   sudo dnf copr enable ebbex/kernel   && sudo dnf upgrade kernel igt-gpu-tools
 #   sudo dnf copr enable ebbex/mingw    && sudo dnf install ucrtarm64-probe   # whole stack
 #   sudo dnf copr enable ebbex/musl     && sudo dnf install musl-libcxx musl-llvm
 #   sudo dnf copr enable ebbex/qemu     && sudo dnf install edk2-ovmf-ia32
