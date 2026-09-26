@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Sets up ~/src/rpms (see CLAUDE.md there): host tooling, one bare repo per
 # package with a worktree per branch, the source trees we patch in ~/src,
-# mock roots. Idempotent.
+# the kernel tree in ~/src/linux, mock roots. Idempotent.
 #
 # Package entries: `name`, `name:fedora` or `name:rpmfusion`; the suffix adds
 # that dist-git as a read-only `upstream` remote. Our branches sit on top of
@@ -268,6 +268,82 @@ setup_src_tree() {
 for entry in "${src_trees[@]}"; do
   # shellcheck disable=SC2086 # word-split on purpose
   setup_src_tree $entry
+done
+
+# --- Kernel source tree ----------------------------------------------------
+# ~/src/linux is laid out like the package repos: a shallow bare repo in
+# .git with the worktrees beside it. Per Fedora release it holds the upstream
+# commit that the spec's Source0 tarball is made from (tag
+# v<tarfile_release>, fetched with --depth 1) and one commit on top with
+# Fedora's patch-<x.y>-redhat.patch, tagged with the Fedora NEVR. One
+# worktree per Fedora release, named like the package repos' (~/src/linux/f44
+# feeds ~/src/rpms/kernel/f44); f44 and f45 can share a tarball but carry
+# different redhat patches.
+# Local commits go above the NEVR tag and are exported into the spec's
+# linux-kernel-test.patch. See "Kernel source tree" in CLAUDE.md.
+LINUX_TREES="$HOME/src/linux"
+LINUX_BARE="$LINUX_TREES/.git"
+
+# setup_kernel_tree <fedora-release>, e.g. f44 or rawhide
+setup_kernel_tree() {
+  local fedora_release=$1
+  local spec="$RPMS_DIR/kernel/$fedora_release/kernel.spec"
+  local dir="$LINUX_TREES/$fedora_release"
+  # Fedora release number for the NEVR; rawhide is one past the newest branch.
+  local rel=${fedora_release#f}
+  [ "$fedora_release" = rawhide ] && rel=$(( ${release_branches[-1]#f} + 1 ))
+
+  local linux_release pv nevr
+  linux_release=$(awk '$1 == "%define" && $2 == "tarfile_release" {print $3}' "$spec")
+  pv=$(awk '$1 == "%define" && $2 == "patchversion" {print $3}' "$spec")
+  nevr=$(rpmspec -q --srpm --define "dist .fc$rel" --define "fedora $rel" \
+    --qf '%{name}-%{version}-%{release}\n' "$spec")
+  local base="v$linux_release"
+
+  # Upstream base. A git snapshot (7.3-rc3-313-g5dd1818b15d9) is fetched by
+  # full sha from the torvalds tree; GitHub's API expands the abbreviation.
+  # Anything else is a tag; the stable tree also carries the mainline tags.
+  if ! has_ref "$LINUX_BARE" "refs/tags/$base"; then
+    if [[ $linux_release =~ -g([0-9a-f]+)$ ]]; then
+      local sha
+      sha=$(curl -fsS "https://api.github.com/repos/torvalds/linux/commits/${BASH_REMATCH[1]}" | jq -er .sha)
+      echo "Fetching linux $base ($sha)..."
+      git --git-dir="$LINUX_BARE" fetch -q --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "$sha"
+      git --git-dir="$LINUX_BARE" tag "$base" "$sha"
+    else
+      echo "Fetching linux $base..."
+      git --git-dir="$LINUX_BARE" fetch -q --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git tag "$base"
+    fi
+  fi
+
+  # Fedora commit: the redhat patch applied to the base in a scratch index,
+  # as kernel.spec's %prep does, so no worktree is needed.
+  if ! has_ref "$LINUX_BARE" "refs/tags/$nevr"; then
+    echo "Committing $nevr (patch-$pv-redhat.patch on $base)..."
+    local idx="$LINUX_BARE/nevr-index" tree
+    GIT_INDEX_FILE=$idx git --git-dir="$LINUX_BARE" read-tree "$base^{tree}"
+    GIT_INDEX_FILE=$idx git --git-dir="$LINUX_BARE" apply --cached --whitespace=nowarn \
+      "$RPMS_DIR/kernel/$fedora_release/patch-$pv-redhat.patch"
+    tree=$(GIT_INDEX_FILE=$idx git --git-dir="$LINUX_BARE" write-tree)
+    rm "$idx"
+    git --git-dir="$LINUX_BARE" tag "$nevr" "$(git --git-dir="$LINUX_BARE" commit-tree \
+      --no-gpg-sign -p "$base^{commit}" -m "Fedora $nevr: patch-$pv-redhat.patch" "$tree")"
+  fi
+
+  has_ref "$LINUX_BARE" "refs/heads/$fedora_release" ||
+    git --git-dir="$LINUX_BARE" branch "$fedora_release" "$nevr"
+  add_worktree "$LINUX_BARE" "$dir" "$fedora_release"
+
+  # Fedora moved to a new NEVR (new tarball or not): move our commits by hand.
+  git --git-dir="$LINUX_BARE" merge-base --is-ancestor "$nevr" "$fedora_release" ||
+    echo "warning: linux/$fedora_release is not on $nevr -- cd $dir && git rebase --onto $nevr" \
+      "$(git --git-dir="$LINUX_BARE" describe --tags --abbrev=0 --match 'kernel-*' "$fedora_release") $fedora_release" >&2
+}
+
+[ -d "$LINUX_BARE" ] || git init -q --bare "$LINUX_BARE"
+git --git-dir="$LINUX_BARE" config user.email "fedora@slipsprogrammor.no"
+for fedora_release in rawhide "${release_branches[@]}"; do
+  setup_kernel_tree "$fedora_release"
 done
 
 # Upstream Hyprland checkout, for reading the build system when bumping specs.
