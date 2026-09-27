@@ -58,6 +58,7 @@ sudo dnf install -y \
 
 sudo dnf install -y \
   gh \
+  glab \
   neovim \
   python3-devel python3-pip \
   ShellCheck
