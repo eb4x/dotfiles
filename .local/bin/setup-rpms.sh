@@ -186,9 +186,7 @@ qemu=(
   edk2:fedora
 )
 
-# --- Repo setup ------------------------------------------------------------
-
-setup_repo() {
+setup_package() {
   local entry=$1
   local pkg=${entry%%:*}
   local bare="$RPMS_DIR/$pkg/.git"
@@ -227,7 +225,7 @@ setup_repo() {
 
 mkdir -p "$RPMS_DIR"
 for entry in "${ffmpeg[@]}" "${gnome[@]}" "${hyprland[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
-  setup_repo "$entry"
+  setup_package "$entry"
 done
 
 # Upstream Hyprland checkout, for reading the build system when bumping specs.
