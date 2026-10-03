@@ -42,6 +42,13 @@ if [ "${SKIP_DEPS:-}" != 1 ]; then
   sudo install -d -o root -g mock -m 2775 /var/lib/mock/overlayfs
 fi
 
+# --- Helpers ---------------------------------------------------------------
+
+has_ref() {
+  local bare=$1 ref=$2
+  git --git-dir="$bare" rev-parse --verify --quiet "$ref" >/dev/null
+}
+
 # --- Packages by Copr project, in build order ------------------------------
 # All projects have the chroots fedora-<rel>-x86_64, <rel> = rawhide or a
 # release number from release_branches.
@@ -217,10 +224,6 @@ check_behind() {
   if [ "$n" != 0 ]; then
     echo "warning: $pkg/$branch is $n commit(s) behind upstream/$ub -- rebase it" >&2
   fi
-}
-
-has_ref() {
-  git --git-dir="$1" rev-parse --verify --quiet "$2" >/dev/null
 }
 
 mkdir -p "$RPMS_DIR"
