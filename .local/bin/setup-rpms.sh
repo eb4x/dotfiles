@@ -12,9 +12,6 @@ set -euo pipefail
 # Not handled: bcachefs-tools (plain Fedora dist-git clone, no Copr).
 
 RPMS_DIR="$HOME/src/rpms"
-GITHUB_BASE="ssh://git@github.com/copr-ebbex"
-FEDORA_BASE="https://src.fedoraproject.org/rpms"
-RPMFUSION_BASE="https://pkgs.rpmfusion.org/git/free"
 
 # Every package gets rawhide plus these. Missing on origin -> created from
 # upstream's branch of the same name, else from rawhide.
@@ -43,6 +40,32 @@ if [ "${SKIP_DEPS:-}" != 1 ]; then
 fi
 
 # --- Helpers ---------------------------------------------------------------
+
+# setup_bare_repo <bare> <email> <upstream-url> <origin-url>: a bare repo
+# with a read-only `upstream` and our `origin` (either URL may be empty),
+# fetched. origin is pruned; upstream never is: it keeps the history of
+# branches deleted from origin.
+setup_bare_repo() {
+  local bare=$1 email=$2 upstream=$3 origin=$4
+  [ -d "$bare" ] || git init -q --bare "$bare"
+  git --git-dir="$bare" config user.email "$email"
+  echo "Fetching ${bare%/.git}..."
+  if [ -n "$upstream" ]; then
+    set_remote "$bare" upstream "$upstream"
+    git --git-dir="$bare" fetch upstream
+  fi
+  if [ -n "$origin" ]; then
+    set_remote "$bare" origin "$origin"
+    git --git-dir="$bare" fetch --prune origin
+  fi
+}
+
+# set_remote <bare> <name> <url>: add it, or point it at <url>.
+set_remote() {
+  local bare=$1 name=$2 url=$3
+  git --git-dir="$bare" remote set-url "$name" "$url" 2>/dev/null ||
+    git --git-dir="$bare" remote add "$name" "$url"
+}
 
 has_ref() {
   local bare=$1 ref=$2
@@ -132,22 +155,16 @@ qemu=(
 setup_repo() {
   local entry=$1
   local pkg=${entry%%:*}
-  local upstream=""
-  [ "$entry" != "$pkg" ] && upstream=${entry#*:}
-
   local bare="$RPMS_DIR/$pkg/.git"
 
-  if [ ! -d "$bare" ]; then
-    echo "Cloning $pkg..."
-    git clone --bare "$GITHUB_BASE/$pkg.git" "$bare"
-  else
-    echo "Fetching $pkg..."
-    git --git-dir="$bare" fetch --prune origin
-  fi
-
-  git --git-dir="$bare" config user.email "fedora@slipsprogrammor.no"
-  # `clone --bare` sets no fetch refspec, so origin/* would never appear.
-  git --git-dir="$bare" config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+  # Read-only `upstream` remote. Never push to it. devel = its rawhide branch.
+  local url="" devel=""
+  case "$entry" in
+    *:fedora)    url="https://src.fedoraproject.org/rpms/$pkg.git";  devel=rawhide ;;
+    *:rpmfusion) url="https://pkgs.rpmfusion.org/git/free/$pkg.git"; devel=master ;;
+    *:*) echo "error: $pkg: unknown upstream '${entry#*:}'" >&2; return 1 ;;
+  esac
+  setup_bare_repo "$bare" fedora@slipsprogrammor.no "$url" "https://github.com/copr-ebbex/$pkg.git"
 
   # Build output out of git status; local-only so it can't conflict on rebase.
   for pattern in '*.src.rpm' '*.rpm' 'results_*/'; do
@@ -162,26 +179,6 @@ setup_repo() {
     git --git-dir="$bare" config extensions.worktreeConfig true
     git --git-dir="$bare" config --unset core.bare || true
     git --git-dir="$bare" config --worktree core.bare true
-  fi
-
-  # Read-only `upstream` remote. Never push to it. devel = its rawhide branch.
-  local devel=""
-  if [ -n "$upstream" ]; then
-    local url
-    case "$upstream" in
-      fedora)    url="$FEDORA_BASE/$pkg.git";    devel=rawhide ;;
-      rpmfusion) url="$RPMFUSION_BASE/$pkg.git"; devel=master ;;
-      *) echo "error: $pkg: unknown upstream '$upstream'" >&2; return 1 ;;
-    esac
-    if ! git --git-dir="$bare" remote get-url upstream &>/dev/null; then
-      # TODO: drop the rename once every checkout has run this (2026-09).
-      if git --git-dir="$bare" remote get-url "$upstream" &>/dev/null; then
-        git --git-dir="$bare" remote rename "$upstream" upstream
-      else
-        git --git-dir="$bare" remote add upstream "$url"
-      fi
-    fi
-    git --git-dir="$bare" fetch upstream
   fi
 
   add_worktree "$bare" "$RPMS_DIR/$pkg/rawhide" rawhide "$devel"
@@ -203,8 +200,10 @@ add_worktree() {
     fi
     return
   fi
-  if has_ref "$bare" "refs/heads/$branch" || has_ref "$bare" "refs/remotes/origin/$branch"; then
+  if has_ref "$bare" "refs/heads/$branch"; then
     git --git-dir="$bare" worktree add "$dir" "$branch"
+  elif has_ref "$bare" "refs/remotes/origin/$branch"; then
+    git --git-dir="$bare" worktree add --track -b "$branch" "$dir" "origin/$branch"
   elif [ -n "$ub" ] && has_ref "$bare" "refs/remotes/upstream/$ub"; then
     echo "Creating $branch from upstream/$ub in $dir (not on origin yet)"
     git --git-dir="$bare" worktree add --no-track -b "$branch" "$dir" "upstream/$ub"
