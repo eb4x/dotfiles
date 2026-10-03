@@ -250,7 +250,9 @@ done
 # alone.
 src_trees=(
   "fwupd main fwupd@slipsprogrammor.no https://github.com/fwupd/fwupd.git https://github.com/eb4x/fwupd.git"
+  "glide main github@slipsprogrammor.no https://github.com/philn/glide.git https://github.com/eb4x/glide.git"
   "igt-gpu-tools master gitlab@slipsprogrammor.no https://gitlab.freedesktop.org/drm/igt-gpu-tools.git"
+  "loupe main fedora@slipsprogrammor.no https://gitlab.gnome.org/GNOME/loupe.git"
 )
 
 setup_src_tree() {
