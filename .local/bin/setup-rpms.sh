@@ -5,14 +5,7 @@ set -euo pipefail
 # package with a worktree per branch, the source trees we patch in ~/src,
 # the kernel tree in ~/src/linux, mock roots. Idempotent.
 #
-# Package entries: `name`, `name:fedora` or `name:rpmfusion`; the suffix adds
-# that dist-git as a read-only `upstream` remote. Our branches sit on top of
-# upstream's (rebase, never merge); the script warns when one has fallen
-# behind.
-#
 # Not handled: bcachefs-tools (plain Fedora dist-git clone, no Copr).
-
-RPMS_DIR="$HOME/src/rpms"
 
 # Every package gets rawhide plus these. Missing on origin -> created from
 # upstream's branch of the same name, else from rawhide.
@@ -112,6 +105,10 @@ has_ref() {
 # --- Packages by Copr project, in build order ------------------------------
 # All projects have the chroots fedora-<rel>-x86_64, <rel> = rawhide or a
 # release number from release_branches.
+# Entries: `name`, `name:fedora` or `name:rpmfusion`; the suffix adds that
+# dist-git as a read-only `upstream` remote. Our branches sit on top of
+# upstream's (rebase, never merge); the script warns when one has fallen
+# behind.
 
 # ebbex/ffmpeg: RPM Fusion rebuild; our `rawhide` is upstream's `master`.
 # Mock roots: fedora-<rel>-x86_64-ffmpeg (adds RPM Fusion free for the
@@ -200,6 +197,8 @@ musl=(
 qemu=(
   edk2:fedora
 )
+
+RPMS_DIR="$HOME/src/rpms"
 
 setup_package() {
   local entry=$1
@@ -386,12 +385,9 @@ fi
 # --- Mock roots ------------------------------------------------------------
 # One tracked template per stack (~/.config/mock/templates/<stack>.tpl) reads
 # the release from the root name; each root is a symlink to it. See MOCK.md.
-for stack in ffmpeg hyprland mingw musl; do
-  tpl="$HOME/.config/mock/templates/$stack.tpl"
-  if [ ! -f "$tpl" ]; then
-    echo "warning: $tpl missing -- check out the dotfiles repo" >&2
-    continue
-  fi
+for tpl in "$HOME"/.config/mock/templates/*.tpl; do
+  [ -f "$tpl" ] || continue
+  stack=$(basename "$tpl" .tpl)
   for rel in rawhide "${release_branches[@]#f}"; do
     ln -sfn "templates/$stack.tpl" "$HOME/.config/mock/fedora-$rel-x86_64-$stack.cfg"
   done
