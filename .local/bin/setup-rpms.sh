@@ -18,7 +18,7 @@ if [ "${SKIP_DEPS:-}" != 1 ]; then
     fedora-review \
     fedpkg \
     git \
-    jq curl \
+    curl \
     llvm lld \
     mock \
     rpmdevtools \
@@ -310,7 +310,8 @@ setup_kernel_tree() {
     local url sha
     if [[ $linux_release =~ -g([0-9a-f]+)$ ]]; then
       url=https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-      sha=$(curl -fsS --max-time 30 --retry 3 "https://api.github.com/repos/torvalds/linux/commits/${BASH_REMATCH[1]}" | jq -er .sha)
+      sha=$(curl -fsS --max-time 30 --retry 3 -H 'Accept: application/vnd.github.sha' \
+        "https://api.github.com/repos/torvalds/linux/commits/${BASH_REMATCH[1]}")
     else
       url=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
       sha=$(git ls-remote --exit-code "$url" "refs/tags/$base^{}" | cut -f1)
