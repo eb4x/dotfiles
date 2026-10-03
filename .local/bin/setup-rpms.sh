@@ -67,6 +67,42 @@ set_remote() {
     git --git-dir="$bare" remote add "$name" "$url"
 }
 
+# add_worktree <bare> <dir> <branch> [<upstream-branch>]: local branch, else
+# origin/<branch>, else a new branch from upstream/<upstream-branch>, else
+# from rawhide.
+add_worktree() {
+  local bare=$1 dir=$2 branch=$3 ub=${4:-}
+  if [ -d "$dir" ]; then
+    if ! git --git-dir="$bare" worktree list --porcelain | grep -qxF "worktree $dir"; then
+      echo "warning: $dir exists but is not a registered worktree -- move it aside and re-run" >&2
+    fi
+    return
+  fi
+  if has_ref "$bare" "refs/heads/$branch"; then
+    git --git-dir="$bare" worktree add "$dir" "$branch"
+  elif has_ref "$bare" "refs/remotes/origin/$branch"; then
+    git --git-dir="$bare" worktree add --track -b "$branch" "$dir" "origin/$branch"
+  elif [ -n "$ub" ] && has_ref "$bare" "refs/remotes/upstream/$ub"; then
+    echo "Creating $branch from upstream/$ub in $dir (not on origin yet)"
+    git --git-dir="$bare" worktree add --no-track -b "$branch" "$dir" "upstream/$ub"
+  else
+    echo "Creating $branch from rawhide in $dir (not on origin yet)"
+    git --git-dir="$bare" worktree add --no-track -b "$branch" "$dir" rawhide
+  fi
+}
+
+# check_behind <bare> <pkg> <branch> [<upstream-branch>]: warn when upstream
+# has commits our branch lacks (time to rebase).
+check_behind() {
+  local bare=$1 pkg=$2 branch=$3 ub=${4:-}
+  [ -n "$ub" ] && has_ref "$bare" "refs/remotes/upstream/$ub" || return 0
+  local n
+  n=$(git --git-dir="$bare" rev-list --count "$branch..upstream/$ub")
+  if [ "$n" != 0 ]; then
+    echo "warning: $pkg/$branch is $n commit(s) behind upstream/$ub -- rebase it" >&2
+  fi
+}
+
 has_ref() {
   local bare=$1 ref=$2
   git --git-dir="$bare" rev-parse --verify --quiet "$ref" >/dev/null
@@ -187,42 +223,6 @@ setup_repo() {
     add_worktree "$bare" "$RPMS_DIR/$pkg/$branch" "$branch" "${devel:+$branch}"
     check_behind "$bare" "$pkg" "$branch" "${devel:+$branch}"
   done
-}
-
-# add_worktree <bare> <dir> <branch> [<upstream-branch>]: local branch, else
-# origin/<branch>, else a new branch from upstream/<upstream-branch>, else
-# from rawhide.
-add_worktree() {
-  local bare=$1 dir=$2 branch=$3 ub=${4:-}
-  if [ -d "$dir" ]; then
-    if ! git --git-dir="$bare" worktree list --porcelain | grep -qxF "worktree $dir"; then
-      echo "warning: $dir exists but is not a registered worktree -- move it aside and re-run" >&2
-    fi
-    return
-  fi
-  if has_ref "$bare" "refs/heads/$branch"; then
-    git --git-dir="$bare" worktree add "$dir" "$branch"
-  elif has_ref "$bare" "refs/remotes/origin/$branch"; then
-    git --git-dir="$bare" worktree add --track -b "$branch" "$dir" "origin/$branch"
-  elif [ -n "$ub" ] && has_ref "$bare" "refs/remotes/upstream/$ub"; then
-    echo "Creating $branch from upstream/$ub in $dir (not on origin yet)"
-    git --git-dir="$bare" worktree add --no-track -b "$branch" "$dir" "upstream/$ub"
-  else
-    echo "Creating $branch from rawhide in $dir (not on origin yet)"
-    git --git-dir="$bare" worktree add --no-track -b "$branch" "$dir" rawhide
-  fi
-}
-
-# check_behind <bare> <pkg> <branch> [<upstream-branch>]: warn when upstream
-# has commits our branch lacks (time to rebase).
-check_behind() {
-  local bare=$1 pkg=$2 branch=$3 ub=${4:-}
-  [ -n "$ub" ] && has_ref "$bare" "refs/remotes/upstream/$ub" || return 0
-  local n
-  n=$(git --git-dir="$bare" rev-list --count "$branch..upstream/$ub")
-  if [ "$n" != 0 ]; then
-    echo "warning: $pkg/$branch is $n commit(s) behind upstream/$ub -- rebase it" >&2
-  fi
 }
 
 mkdir -p "$RPMS_DIR"
