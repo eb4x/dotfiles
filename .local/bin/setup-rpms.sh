@@ -154,6 +154,12 @@ kernel=(
   igt-gpu-tools:fedora
 )
 
+# ebbex/lutris: Fedora's lutris, developed in ~/src/lutris. No Copr deps:
+# plain fedora-<rel>-x86_64 mock roots.
+lutris=(
+  lutris:fedora
+)
+
 # ebbex/mingw: the ucrtarm64 (aarch64-w64-mingw32) clang/lld cross toolchain.
 # Mock roots: fedora-<rel>-x86_64-mingw. Each level must be published in the
 # Copr before the next builds:
@@ -238,7 +244,7 @@ setup_package() {
 }
 
 mkdir -p "$RPMS_DIR"
-for entry in "${ffmpeg[@]}" "${fwupd[@]}" "${gnome[@]}" "${hyprland[@]}" "${kernel[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
+for entry in "${ffmpeg[@]}" "${fwupd[@]}" "${gnome[@]}" "${hyprland[@]}" "${kernel[@]}" "${lutris[@]}" "${mingw[@]}" "${mingw_ladder[@]}" "${musl[@]}" "${qemu[@]}"; do
   setup_package "$entry"
 done
 
@@ -253,6 +259,7 @@ src_trees=(
   "glide main github@slipsprogrammor.no https://github.com/philn/glide.git https://github.com/eb4x/glide.git"
   "igt-gpu-tools master gitlab@slipsprogrammor.no https://gitlab.freedesktop.org/drm/igt-gpu-tools.git"
   "loupe main fedora@slipsprogrammor.no https://gitlab.gnome.org/GNOME/loupe.git"
+  "lutris master github@slipsprogrammor.no https://github.com/lutris/lutris.git https://github.com/eb4x/lutris.git"
 )
 
 setup_src_tree() {
