@@ -4,8 +4,6 @@ set -euo pipefail
 # Sets up ~/src/rpms (see CLAUDE.md there): host tooling, one bare repo per
 # package with a worktree per branch, the source trees we patch in ~/src,
 # the kernel tree in ~/src/linux, mock roots. Idempotent.
-#
-# Not handled: bcachefs-tools (plain Fedora dist-git clone, no Copr).
 
 # Every package gets rawhide plus these. Missing on origin -> created from
 # upstream's branch of the same name, else from rawhide.
@@ -148,10 +146,13 @@ hyprland=(
 )
 
 # ebbex/kernel: Fedora's kernel, plus igt-gpu-tools (gputop) for the Arc
-# A770 / xe work. No Copr deps: plain fedora-<rel>-x86_64 mock roots.
+# A770 / xe work, and bcachefs-tools (ngompa's) built with dkms for
+# dkms-bcachefs: the Copr chroots set `--with dkms`, local builds pass it to
+# fedpkg mockbuild. No Copr deps: plain fedora-<rel>-x86_64 mock roots.
 kernel=(
-  kernel:fedora
+  bcachefs-tools:fedora
   igt-gpu-tools:fedora
+  kernel:fedora
 )
 
 # ebbex/lutris: Fedora's lutris, developed in ~/src/lutris. No Copr deps:
