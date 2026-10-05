@@ -155,10 +155,13 @@ kernel=(
   kernel:fedora
 )
 
-# ebbex/lutris: Fedora's lutris, developed in ~/src/lutris. No Copr deps:
-# plain fedora-<rel>-x86_64 mock roots.
+# ebbex/lutris: Fedora's lutris, developed in ~/src/lutris, and the wine it
+# runs. wine Requires an exact wine-mono: when both change, publish wine-mono
+# first. No Copr deps: plain fedora-<rel>-x86_64 mock roots.
 lutris=(
   lutris:fedora
+  wine:fedora
+  wine-mono:fedora
 )
 
 # ebbex/mingw: the ucrtarm64 (aarch64-w64-mingw32) clang/lld cross toolchain.
