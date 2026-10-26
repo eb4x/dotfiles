@@ -67,6 +67,8 @@ sudo dnf install -y \
 # As long as we're administering EL8, there's no point in running newer ansible-core
 pipx install 'ansible-core<2.17'
 
+pipx install pre-commit
+
 # Installs to ~/.local/share/claude/versions/ behind a ~/.local/bin/claude shim
 # and self-updates from there, so this only ever runs on a fresh machine.
 if [ ! -x "$HOME/.local/bin/claude" ]; then
