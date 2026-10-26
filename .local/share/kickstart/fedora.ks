@@ -146,7 +146,7 @@ bash-completion
 bsdtar
 git-core
 kernel-modules-extra
-python3-pip
+pipx
 EOF
 
 if ! grep -qw inst.norpmfusion /proc/cmdline; then

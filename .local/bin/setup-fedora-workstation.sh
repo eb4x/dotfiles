@@ -60,13 +60,12 @@ sudo dnf install -y \
   gh \
   glab \
   neovim \
-  python3-devel python3-pip \
+  pipx \
+  python3-devel \
   ShellCheck
 
-pip install --upgrade --user pip
-
 # As long as we're administering EL8, there's no point in running newer ansible-core
-pip install --user 'ansible-core<2.17'
+pipx install 'ansible-core<2.17'
 
 # Installs to ~/.local/share/claude/versions/ behind a ~/.local/bin/claude shim
 # and self-updates from there, so this only ever runs on a fresh machine.
@@ -235,7 +234,7 @@ if nmcli connection show skynet &> /dev/null; then
   fi
 fi
 
-pip install --user sshuttle
+pipx install sshuttle
 
 sshuttle --sudoers-no-modify | \
   grep -v -E '^\s*$|^#' | \
