@@ -17,7 +17,7 @@
 [alias]
 	recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 [rebase]
-	updateRefs = true
+#	updateRefs = true
 [rerere]
 	enabled = false
 [credential "https://github.com"]
