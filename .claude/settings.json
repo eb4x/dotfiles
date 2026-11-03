@@ -9,5 +9,10 @@
     "defaultMode": "default"
   },
   "remoteControlAtStartup": true,
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "excludedCommands": ["git *", "gh *"]
+  },
   "theme": "dark"
 }

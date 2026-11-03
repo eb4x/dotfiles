@@ -49,8 +49,10 @@ sudo dnf upgrade -y
 sudo dnf install -y \
   bsdtar \
   btop htop iftop iotop \
+  bubblewrap \
   jq \
   nemo \
+  socat \
   sshfs \
   tmux
 
