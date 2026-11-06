@@ -49,10 +49,8 @@ sudo dnf upgrade -y
 sudo dnf install -y \
   bsdtar \
   btop htop iftop iotop \
-  bubblewrap \
   jq \
   nemo \
-  socat \
   sshfs \
   tmux
 
@@ -70,6 +68,11 @@ sudo dnf install -y \
 pipx install 'ansible-core<2.17'
 
 pipx install pre-commit
+
+# Install claude sandbox dependencies
+sudo dnf install -y \
+  bubblewrap \
+  socat
 
 # Installs to ~/.local/share/claude/versions/ behind a ~/.local/bin/claude shim
 # and self-updates from there, so this only ever runs on a fresh machine.
