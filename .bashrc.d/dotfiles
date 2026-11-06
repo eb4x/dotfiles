@@ -18,3 +18,5 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 #  -c status.showUntrackedFiles=no \
 #  https://github.com/eb4x/dotfiles.git $HOME/.dotfiles
 #dotfiles checkout
+# auth.json is a dummy for clean systems; keep real credentials out of git.
+#dotfiles update-index --skip-worktree $HOME/.config/containers/auth.json

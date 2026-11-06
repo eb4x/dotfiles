@@ -199,6 +199,8 @@ if ! grep -qw inst.keephome /proc/cmdline; then
     https://github.com/eb4x/dotfiles.git $HOME/.dotfiles'
   su - erikberg -c 'rm $HOME/.bashrc $HOME/.bash_profile'
   su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME checkout'
+  # auth.json is a dummy for clean systems; keep real credentials out of git.
+  su - erikberg -c 'git --git-dir=$HOME/.dotfiles --work-tree=$HOME update-index --skip-worktree .config/containers/auth.json'
   su - erikberg -c 'restorecon -R $HOME'
 fi
 %end
