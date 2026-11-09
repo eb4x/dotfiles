@@ -6,7 +6,8 @@
   "awaySummaryEnabled": false,
   "outputStyle": "Concise",
   "permissions": {
-    "defaultMode": "default"
+    "defaultMode": "default",
+    "blockReadsOutsideWorkingDirectories": true
   },
   "remoteControlAtStartup": true,
   "sandbox": {
