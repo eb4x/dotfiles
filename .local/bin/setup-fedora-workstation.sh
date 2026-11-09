@@ -66,6 +66,12 @@ sudo dnf install -y \
 
 # As long as we're administering EL8, there's no point in running newer ansible-core
 pipx install 'ansible-core<2.17'
+# Alternative: pipx inject ansible-core hvac jmespath netaddr pywinrm
+sudo dnf install -y \
+  python3-hvac \
+  python3-jmespath \
+  python3-netaddr \
+  python3-winrm
 
 pipx install pre-commit
 
