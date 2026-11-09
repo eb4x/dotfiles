@@ -29,3 +29,6 @@
 [credential "https://github.uio.no"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
+[credential "https://gitlab.com"]
+	helper =
+	helper = !/usr/bin/glab auth git-credential
