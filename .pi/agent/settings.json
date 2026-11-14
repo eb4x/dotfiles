@@ -1,0 +1,8 @@
+{
+  "defaultModel": "qwen3.8-flash-next",
+  "defaultProvider": "llama.cpp",
+  "extensions": [
+    "+builtin:mcp"
+  ],
+  "theme": "dark"
+}
