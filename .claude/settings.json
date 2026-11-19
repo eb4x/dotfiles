@@ -8,14 +8,17 @@
   "model": "claude-opus-5-5",
   "outputStyle": "Concise",
   "permissions": {
-    "defaultMode": "default",
-    "blockReadsOutsideWorkingDirectories": true
+    "blockReadsOutsideWorkingDirectories": true,
+    "defaultMode": "default"
   },
   "remoteControlAtStartup": true,
   "sandbox": {
     "enabled": true,
-    "failIfUnavailable": true,
-    "excludedCommands": ["git *", "gh *"]
+    "excludedCommands": [
+      "git *",
+      "gh *"
+    ],
+    "failIfUnavailable": true
   },
   "theme": "dark"
 }
