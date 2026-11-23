@@ -1,6 +1,6 @@
 {
-  "defaultModel": "qwen3.8-flash-next",
-  "defaultProvider": "llama.cpp",
+  "defaultModel": "Qwen/Qwen3.8-27B-FP8",
+  "defaultProvider": "uio",
   "extensions": [
     "+builtin:mcp"
   ],

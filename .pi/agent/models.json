@@ -1,0 +1,128 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "uio-anthropic": {
+      "name": "UiO Anthropic (yellow)",
+      "baseUrl": "https://gpt.uio.no/api/claude",
+      "api": "anthropic-messages",
+      "apiKey": "$GPT_UIO_NO_YELLOW_TOKEN",
+      "authHeader": true,
+      "models": [
+        {"id":"claude-opus-5-5","name":"UiO Claude Opus 5.5","reasoning":true,"thinkingLevelMap":{"off":null,"minimal":null,"low":"low","medium":"medium","high":"high","xhigh":"xhigh","max":"max"},"input":["text","image"],"contextWindow":1000000,"maxTokens":128000,"cost":{"input":4,"output":20,"cacheRead":0.2,"cacheWrite":5},"compat":{"forceAdaptiveThinking":true,"supportsTemperature":false}},
+        {"id":"claude-sonnet-5-5","name":"UiO Claude Sonnet 5.5","reasoning":true,"thinkingLevelMap":{"off":null,"minimal":null,"low":"low","medium":"medium","high":"high","xhigh":"xhigh","max":"max"},"input":["text","image"],"contextWindow":1000000,"maxTokens":128000,"cost":{"input":2,"output":10,"cacheRead":0.1,"cacheWrite":2.5},"compat":{"forceAdaptiveThinking":true,"supportsTemperature":false}},
+        {"id":"claude-haiku-5-5","name":"UiO Claude Haiku 5.5","reasoning":true,"thinkingLevelMap":{"minimal":null,"low":"low","medium":"medium","high":"high","xhigh":"xhigh","max":"max"},"input":["text","image"],"contextWindow":1000000,"maxTokens":128000,"cost":{"input":0.1,"output":0.5,"cacheRead":0.01,"cacheWrite":0.125,"tiers":[{"inputTokensAbove":100000,"input":0.5,"output":2.5,"cacheRead":0.05,"cacheWrite":0.625}]},"compat":{"forceAdaptiveThinking":true,"supportsTemperature":false}}
+      ]
+    },
+    "uio-anthropic-green": {
+      "name": "UiO Anthropic (green)",
+      "baseUrl": "https://gpt.uio.no/api/claude",
+      "api": "anthropic-messages",
+      "apiKey": "$GPT_UIO_NO_GREEN_TOKEN",
+      "authHeader": true,
+      "models": [
+        {
+          "id": "claude-fable-5-1",
+          "name": "UiO Claude Fable 5.1",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": null, "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"],
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "cost": { "input": 10, "output": 50, "cacheRead": 0.25, "cacheWrite": 12.5 },
+          "compat": { "forceAdaptiveThinking": true }
+        }
+      ]
+    },
+    "uio": {
+      "name": "UiO GPT (yellow)",
+      "baseUrl": "https://gpt.uio.no/api/v1",
+      "api": "openai-completions",
+      "apiKey": "$GPT_UIO_NO_YELLOW_TOKEN",
+      "models": [
+        { "id": "mistralai/Mistral-Medium-3.5-128B" },
+        { "id": "NorwAI/NorwAI-Magistral-24B-reasoning" },
+        { "id": "Qwen/Qwen3.8-27B-FP8" },
+        { "id": "moonshotai/Kimi-K2.6" },
+        { "id": "google/gemma-4-31B-it" },
+        { "id": "NbAiLab/borealis-27b" },
+        { "id": "norallm/normistral-11b-thinking" },
+        { "id": "gpt-oss-120b" },
+        { "id": "Inferact/GLM-5.3-NVFP4" }
+      ]
+    },
+    "uio-openai": {
+      "name": "UiO OpenAI (yellow)",
+      "baseUrl": "https://gpt.uio.no/api/v1",
+      "api": "openai-responses",
+      "apiKey": "$GPT_UIO_NO_YELLOW_TOKEN",
+      "models": [
+        {
+          "id": "gpt-5",
+          "name": "UiO GPT-5",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": null },
+          "input": ["text", "image"],
+          "contextWindow": 400000,
+          "maxTokens": 128000
+        },
+        {
+          "id": "gpt-5-mini",
+          "name": "UiO GPT-5 mini",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": null },
+          "input": ["text", "image"],
+          "contextWindow": 400000,
+          "maxTokens": 128000
+        },
+        {
+          "id": "gpt-5.1",
+          "name": "UiO GPT-5.1",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": "none" },
+          "input": ["text", "image"],
+          "contextWindow": 400000,
+          "maxTokens": 128000
+        },
+        {
+          "id": "gpt-5.4",
+          "name": "UiO GPT-5.4",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": "none", "xhigh": "xhigh" },
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000
+        },
+        {
+          "id": "gpt-6-luna",
+          "name": "UiO GPT-6 Luna",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": "none", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "cost": { "input": 0.1, "output": 0.5, "cacheRead": 0.01, "cacheWrite": 0.125 }
+        },
+        {
+          "id": "gpt-6.1-sol",
+          "name": "UiO GPT-6.1 Sol",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "cost": { "input": 2, "output": 10, "cacheRead": 0.1, "cacheWrite": 2.5 }
+        },
+        {
+          "id": "gpt-6.1-terra",
+          "name": "UiO GPT-6.1 Terra",
+          "reasoning": true,
+          "thinkingLevelMap": { "off": "none", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"],
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "cost": { "input": 1, "output": 5, "cacheRead": 0.05, "cacheWrite": 1.25 }
+        }
+      ]
+    }
+  }
+}

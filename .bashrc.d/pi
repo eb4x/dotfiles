@@ -1,0 +1,18 @@
+# On lizzie, default pi to the local llama.cpp Qwen; elsewhere use
+# ~/.pi/agent/settings.json (UiO). Explicit model flags always win.
+pi() {
+	if [ "${HOSTNAME%%.*}" = lizzie ]; then
+		local arg
+		for arg in "$@"; do
+			case $arg in
+			--provider | --provider=* | --model | --model=* | --models | --models=*)
+				command pi "$@"
+				return
+				;;
+			esac
+		done
+		command pi --provider llama.cpp --model qwen3.8-flash-next "$@"
+	else
+		command pi "$@"
+	fi
+}
