@@ -16,7 +16,7 @@ fi
 ## Get version
 if ! [[ $(vagrant --version) =~ Vagrant[[:space:]]+([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]]; then
   echo "Unexpected output from `vagrant --version`"
-  exit 1
+  return 1
 fi
 
 vagrant_version=${BASH_REMATCH[1]}
