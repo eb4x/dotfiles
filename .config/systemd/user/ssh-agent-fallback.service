@@ -1,0 +1,13 @@
+# For hosts whose ssh-agent lacks socket activation (e.g. RHEL 8), so no
+# ssh-agent.socket. Named apart from ssh-agent.service so it never overrides
+# the distro's socket-activated unit where one exists.
+[Unit]
+Description=SSH agent (for hosts without ssh-agent.socket)
+
+[Service]
+ExecStartPre=-/usr/bin/rm -f %t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-agent -D -a %t/ssh-agent.socket
+SuccessExitStatus=2
+
+[Install]
+WantedBy=default.target
