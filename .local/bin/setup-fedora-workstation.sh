@@ -10,6 +10,9 @@ set -euo pipefail
 echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/$USER" > /dev/null
 sudo chmod 0440 "/etc/sudoers.d/$USER"
 
+# git doesn't record directory modes, and gpg warns unless its homedir is 0700.
+chmod 700 "$HOME/.gnupg"
+
 source /etc/os-release
 
 host=$(hostname --short)
