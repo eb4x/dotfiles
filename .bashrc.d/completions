@@ -13,5 +13,3 @@ fi
 if command -v vault &> /dev/null; then
   complete -C $(which vault) vault
 fi
-
-

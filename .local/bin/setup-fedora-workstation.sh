@@ -202,8 +202,8 @@ fi
 
 # ZSA Voyager
 sudo tee /etc/udev/rules.d/50-zsa.rules > /dev/null <<EOF
-SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0660", GROUP="wheel", TAG+="uaccess"
-SUBSYSTEMS=="usb",   ATTRS{idVendor}=="3297",                           MODE="0660", GROUP="wheel", SYMLINK+="ignition_dfu"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3297", TAG+="uaccess"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="3297", SYMLINK+="ignition_dfu", TAG+="uaccess"
 EOF
 
 # zram with zstd instead of the lzo-rle default: ~3-3.5x compression rather than
