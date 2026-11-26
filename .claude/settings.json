@@ -20,8 +20,14 @@
   },
   "outputStyle": "Concise",
   "permissions": {
+    "additionalDirectories": [
+      "~/Pictures/Screenshots"
+    ],
     "blockReadsOutsideWorkingDirectories": true,
-    "defaultMode": "default"
+    "defaultMode": "default",
+    "deny": [
+      "Edit(~/Pictures/Screenshots/**)"
+    ]
   },
   "remoteControlAtStartup": true,
   "sandbox": {
@@ -30,7 +36,12 @@
       "git *",
       "gh *"
     ],
-    "failIfUnavailable": true
+    "failIfUnavailable": true,
+    "filesystem": {
+      "allowRead": [
+        "~/Pictures/Screenshots"
+      ]
+    }
   },
   "theme": "dark"
 }
