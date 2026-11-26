@@ -14,9 +14,8 @@ or `$(…)` or a backtick even when quoted, sandboxes the call or prompts.
 Instead, `cd /abs/path` in its own call first, and pass messages from a file
 (`-F`, gh `--body-file`) or, when plain and short, `-m`. A subagent's `cd`
 does not persist: there `git -C` still reads, and it hands commits outside its
-cwd back to the caller. `git config` writes fail: use
-`git remote add`/`set-url`/`set-branches` or `git branch -u` where they fit,
-else hand the write to the user.
+cwd back to the caller. A `git config` write works only as such a plain call:
+sandboxed it fails with EBUSY, the config files being read-only mounts.
 
 Commit messages: every line at most 72 columns, subject included, except a
 URL, trailer or quoted output, which stay whole. git does not wrap `-m`, so
@@ -60,3 +59,6 @@ Many of my repos are bare, with worktrees beneath (`<repo>/master/`,
   belongs in the repo.
 - To add a worktree, `cd` to the bare root, then give a relative path:
   `git worktree add <branch> <branch>` (`-b <branch> <branch>` if new).
+- If a bare clone has no fetch refspec (no `origin/<branch>`), set
+  `remote.origin.fetch` to `+refs/heads/*:refs/remotes/origin/*`, then
+  `git fetch origin`.
