@@ -49,10 +49,17 @@ sudo dnf upgrade -y
 sudo dnf install -y \
   bsdtar \
   btop htop iftop iotop \
+  fwupd \
   jq \
   nemo \
   sshfs \
   tmux
+
+# Keep fwupd and jq from being autoremoved as gnome-software dependencies
+if rpm -q gnome-software &> /dev/null; then
+  sudo dnf mark user fwupd jq
+  sudo dnf remove -y gnome-software
+fi
 
 # --- Development -------------------------------------------------------------
 
