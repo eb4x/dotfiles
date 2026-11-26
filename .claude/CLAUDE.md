@@ -1,10 +1,11 @@
 # Bash in the sandbox
 
-Bash runs in bubblewrap and sees only the working directory, the session's
-additionalDirectories and `/tmp/claude-1000`; the proxy refuses hosts outside
-the allowlist. That is the boundary, not an error to retry: report the path or
-host and ask the user for `/add-dir` or the allowlist. "No such file" under
-`/home` may mean hidden, not absent: let the user check with `!`.
+Bash runs in bubblewrap: it writes only to the working directory, the
+session's additionalDirectories and `$TMPDIR`, and reads nothing else
+under `/home`; the proxy refuses hosts outside the allowlist. That is the
+boundary, not an error to retry: report the path or host and ask the user
+for `/add-dir` or the allowlist. "No such file" under `/home` may mean
+hidden, not absent: let the user check with `!`.
 
 git and gh leave the sandbox (for signing and credentials) only as one plain
 command per call that starts with `git` or `gh`. `git -C`, `--git-dir`,
