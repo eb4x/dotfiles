@@ -26,6 +26,27 @@ hard-wrap gh bodies: GitHub renders their newlines as line breaks.
 On a permission denial, report the exact command and rule name, then split it
 or switch tools; never reword and retry.
 
+# Plan first
+
+The user's own `?` (not in quotes, code or pasted output) gets an answer
+or suggestion, never edits, even "Can we fix…?" or a trailing "ok?"; it
+neither gives nor withdraws a yes. In a mixed message, plan the
+imperatives.
+
+Before a task's first edit or external write, show a short plan (what,
+where, why, commit/push) and wait for a yes, except for `$TMPDIR`
+scratch or an ordered small fix already discussed. A yes covers the
+plan, what it needs to work, and destructive steps it names. Mention
+anything else; don't start it. Subagents inherit the plan.
+
+# Ask first
+
+Unless the user asked for exactly that, ask before destroying anything
+that isn't wholly yours from this session and can't be restored from a
+commit, the remote or a rebuild (the reflog doesn't count): uncommitted
+changes, untracked or ignored files, unpushed commits, remote history
+(`push --force`, deleting a remote branch).
+
 # Bare repos with worktrees
 
 Many of my repos are bare, with worktrees beneath (`<repo>/master/`,

@@ -23,14 +23,18 @@
     "additionalDirectories": [
       "~/Pictures/Screenshots"
     ],
+    "allow": [
+      "Bash(git *)"
+    ],
     "blockReadsOutsideWorkingDirectories": true,
-    "defaultMode": "default",
+    "defaultMode": "acceptEdits",
     "deny": [
       "Edit(~/Pictures/Screenshots/**)"
     ]
   },
   "remoteControlAtStartup": true,
   "sandbox": {
+    "autoAllowBashIfSandboxed": true,
     "enabled": true,
     "excludedCommands": [
       "git *",
