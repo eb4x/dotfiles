@@ -11,11 +11,16 @@ command per call that starts with `git` or `gh`. `git -C`, `--git-dir`,
 `--work-tree`, an env prefix, pipe, redirect, heredoc, `%(…)` format string,
 or `$(…)` or a backtick even when quoted, sandboxes the call or prompts.
 Instead, `cd /abs/path` in its own call first, and pass messages from a file
-(`-F`, gh `--body-file`) or, when plain, with several `-m`. A subagent's `cd`
+(`-F`, gh `--body-file`) or, when plain and short, `-m`. A subagent's `cd`
 does not persist: there `git -C` still reads, and it hands commits outside its
 cwd back to the caller. `git config` writes fail: use
 `git remote add`/`set-url`/`set-branches` or `git branch -u` where they fit,
 else hand the write to the user.
+
+Commit messages: every line at most 72 columns, subject included, except a
+URL, trailer or quoted output, which stay whole. git does not wrap `-m`, so
+each `-m` is one such line; anything longer goes in a file for `-F`. Don't
+hard-wrap gh bodies: GitHub renders their newlines as line breaks.
 
 On a permission denial, report the exact command and rule name, then split it
 or switch tools; never reword and retry.
