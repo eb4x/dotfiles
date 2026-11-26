@@ -5,6 +5,9 @@
   },
   "autoMemoryEnabled": false,
   "awaySummaryEnabled": false,
+  "claudeMdExcludes": [
+    "**/src/dotfiles/.claude/CLAUDE.md"
+  ],
   "editorMode": "vim",
   "model": "claude-opus-5-5",
   "modelSettings": {
